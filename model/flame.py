@@ -1,4 +1,4 @@
-from math import sqrt, sin, cos, pi
+from math import sqrt, sin, cos, pi, tau
 from random import random
 
 from go import Vector4D, Lorentz
@@ -28,9 +28,9 @@ class Flame(object):
             phi = pi * i / m
             # To stagger the effects, every other one will be rotated half a
             # line of longitude off from the previous/next row.
-            offset = (pi / n) if (i % 2 == 1) else 0.0
+            offset = 0.5 if (i % 2 == 1) else 0.0
             for j in range(n):
-                theta = 2.0 * pi * j / n + offset
+                theta = tau * (j + offset) / n
                 vertices.append(Vector4D(t, sin(phi)*sin(theta),
                                             cos(phi),
                                             sin(phi)*cos(theta)))
