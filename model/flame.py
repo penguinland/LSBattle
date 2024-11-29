@@ -19,17 +19,23 @@ class Flame(object):
         """
         self.model = PointSpriteDoppler(color=color, texture=DY_TEXTURE_KYU)
         t = 1.0/v
+
+        # We use polar coordinates to create a bunch of vertices. Put one at the
+        # north pole, then rings along lines of latitude, and finally one at the
+        # south pole.
         vertices = [Vector4D(t, 0.0, 1.0, 0.0)]
-        for i in range(1, m):
-            phi = pi/m*i
-            if i%2: e = pi/n
-            else:   e = 0.0
+        for i in range(1, m):  # 0 through m, not including 0 or m itself
+            phi = pi * i / m
+            # To stagger the effects, every other one will be rotated half a
+            # line of longitude off from the previous/next row.
+            offset = (pi / n) if (i % 2 == 1) else 0.0
             for j in range(n):
-                theta = 2.0*pi/n*j + e
+                theta = 2.0 * pi * j / n + offset
                 vertices.append(Vector4D(t, sin(phi)*sin(theta),
                                             cos(phi),
                                             sin(phi)*cos(theta)))
         vertices.append(Vector4D(t, 0.0, -1.0, 0.0))
+
         self.vertices = vertices
         self.a = self.vertices[0].squared_norm()
         self.sizes = [BOX.Y*psize*(0.9 + random()*0.2) for i in self.vertices]
