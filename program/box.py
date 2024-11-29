@@ -144,11 +144,13 @@ class _Box(object):
             self.game_init()
 
     def set_fullscreen(self):
-        if not self.FULL_SCREEN:
-            self.FULL_SCREEN = True
-            self._should_save = True
-            self.sdl2_quit()
-            self.game_init()
+        if self.FULL_SCREEN:
+            return  # Already in fullscreen mode
+
+        self.FULL_SCREEN = True
+        self._should_save = True
+        self.sdl2_quit()
+        self.game_init()
 
     def set_mode(self, mode):
         self.MODE = mode
