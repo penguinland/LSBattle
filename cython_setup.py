@@ -1,12 +1,13 @@
-# coding: utf8
+from Cython.Distutils import build_ext
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
 from glob import iglob
-import os, sys
+import os
+import sys
+
 
 # python cython_setup.py build_ext --inplace
-if len(sys.argv) == 1:
+if len(sys.argv) == 1:  # If no CLI args are included, add some by default
     sys.argv.append("build_ext")
     sys.argv.append("--inplace")
 
@@ -16,11 +17,13 @@ if os.name == "nt":
         '/EHsc', # 警告回避
         '/MT', # /MDオプション上書き
         ]
+
 for pyxname in iglob("go/*.pyx"):
     name, ext = os.path.splitext(pyxname)
-    ext_modules = [Extension(name.replace(os.sep, "."), [pyxname], **option)]
+    name = name.replace(os.sep, ".")
+    ext_modules = [Extension(name, [pyxname], **option)]
     setup(
-        name = name.replace(os.sep, "."),
+        name = name,
         cmdclass = {'build_ext': build_ext},
         ext_modules = ext_modules
     )
