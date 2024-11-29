@@ -223,7 +223,7 @@ class MqoObject(object):
             raise IOError("This file is not Metasequoia Document")
 
         line = next(self.imqo)
-        m = re.match("^Format (\w+) Ver (\d+)\.(\d+)", line)
+        m = re.match(r"^Format (\w+) Ver (\d+)\.(\d+)", line)
         if m:
             if m.group(1) != "Text":
                 raise IOError("This file format is not supported")
@@ -252,7 +252,7 @@ class MqoObject(object):
                                  \)
                              )
                              """, re.VERBOSE)
-        re_field = re.compile("^(\w+)\(([^)]*)\)")
+        re_field = re.compile(r"^(\w+)\(([^)]*)\)")
         materials = []
         while True:
             line = next(self.imqo).strip()

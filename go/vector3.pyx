@@ -4,7 +4,7 @@
 cimport cython
 from libc.math cimport sqrt
 
-from vector3 cimport Vector3, vec3_from_floats
+from go.vector3 cimport Vector3, vec3_from_floats
 
 
 cdef void _arg0(Vector3 self, args):
