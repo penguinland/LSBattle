@@ -1,7 +1,6 @@
-#coding: utf8
-# const.py
 import os as _os
 import sys as _sys
+
 
 path = _os.path.abspath(_os.path.dirname(_sys.argv[0]))
 _input_path = _os.path.join(path, "resources")
