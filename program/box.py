@@ -52,32 +52,34 @@ class _Box(object):
             self._should_save = True
 
     def game_init(self):
-        if not sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) and self.window is None:
-            sdl2.ext.init()
-            w_mode = sdl2.SDL_DisplayMode()
-            sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
-            if self.X > w_mode.w or self.Y > w_mode.h:
-                self.X, self.Y = DISP_SIZES[0]
-                self._should_save = True
-            flg = sdl2.SDL_WINDOW_OPENGL
-            if self.FULL_SCREEN:
-                flg |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
-                self.X = w_mode.w
-                self.Y = w_mode.h
-                self._should_save = True
-            self.window = sdl2.SDL_CreateWindow(GAME_NAME,
-                                                sdl2.SDL_WINDOWPOS_UNDEFINED,
-                                                sdl2.SDL_WINDOWPOS_UNDEFINED,
-                                                self.X, self.Y,
-                                                flg)
-            if not self.window:
-                print((sdl2.SDL_GetError()))
-                sdl2.ext.SDL_quit()
-                sys.exit(-1)
-            self.context = sdl2.SDL_GL_CreateContext(self.window)
+        if sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) or self.window is not None:
+            return  # Already initialized
 
-            self.opengl_init()
-            self.resize()
+        sdl2.ext.init()
+        w_mode = sdl2.SDL_DisplayMode()
+        sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
+        if self.X > w_mode.w or self.Y > w_mode.h:
+            self.X, self.Y = DISP_SIZES[0]
+            self._should_save = True
+        flg = sdl2.SDL_WINDOW_OPENGL
+        if self.FULL_SCREEN:
+            flg |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
+            self.X = w_mode.w
+            self.Y = w_mode.h
+            self._should_save = True
+        self.window = sdl2.SDL_CreateWindow(GAME_NAME,
+                                            sdl2.SDL_WINDOWPOS_UNDEFINED,
+                                            sdl2.SDL_WINDOWPOS_UNDEFINED,
+                                            self.X, self.Y,
+                                            flg)
+        if not self.window:
+            print((sdl2.SDL_GetError()))
+            sdl2.ext.SDL_quit()
+            sys.exit(-1)
+        self.context = sdl2.SDL_GL_CreateContext(self.window)
+
+        self.opengl_init()
+        self.resize()
 
     def sdl2_quit(self):
         sdl2.SDL_GL_DeleteContext(self.context)
