@@ -38,8 +38,8 @@ class Flame(object):
 
         self.vertices = vertices
         self.a = self.vertices[0].squared_norm()
-        self.sizes = [BOX.Y*psize*(0.9 + random()*0.2) for i in self.vertices]
-        self.SS = [S * (0.5 + random()*2.0) for i in self.vertices]
+        self.sizes = [BOX.Y*psize*(0.9 + random()*0.2) for _ in self.vertices]
+        self.SS = [S * (0.5 + random()*2.0) for _ in self.vertices]
 
     def draw(self, X, Xp, L, LL=None, color=None):
         a = self.a
