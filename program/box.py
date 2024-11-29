@@ -155,15 +155,17 @@ class _Box(object):
         self.SAVE = True
 
     def save(self):
-        if self.SAVE:
-            try:
-                with open(os.path.join(CONFIG_DIR, "setting.ini"), "w") as f:
-                    f.write(f"DISPLAY_SIZE_X={self.X}\n")
-                    f.write(f"DISPLAY_SIZE_Y={self.Y}\n")
-                    f.write(f"FULL_SCREEN={self.FULL_SCREEN}\n")
-                    f.write(f"MODE={self.MODE}\n")
-            except:
-                pass
+        if not self.SAVE:
+            return
+
+        try:
+            with open(os.path.join(CONFIG_DIR, "setting.ini"), "w") as f:
+                f.write(f"DISPLAY_SIZE_X={self.X}\n")
+                f.write(f"DISPLAY_SIZE_Y={self.Y}\n")
+                f.write(f"FULL_SCREEN={self.FULL_SCREEN}\n")
+                f.write(f"MODE={self.MODE}\n")
+        except:
+            pass
 
 
 BOX = _Box()
