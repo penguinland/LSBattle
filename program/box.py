@@ -136,12 +136,14 @@ class _Box(object):
         self.far_clip = script.ui.far_clip*scale
 
     def set_displaysize(self, i):
-        if DISP_SIZES[i][0] != self.X and DISP_SIZES[i][1] != self.Y:
-            self.X, self.Y = DISP_SIZES[i]
-            self.FULL_SCREEN = False
-            self._should_save = True
-            self.sdl2_quit()
-            self.game_init()
+        if DISP_SIZES[i][0] == self.X and DISP_SIZES[i][1] == self.Y:
+            return  # Already the right size
+
+        self.X, self.Y = DISP_SIZES[i]
+        self.FULL_SCREEN = False
+        self._should_save = True
+        self.sdl2_quit()
+        self.game_init()
 
     def set_fullscreen(self):
         if self.FULL_SCREEN:
