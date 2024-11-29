@@ -1,5 +1,5 @@
 from math import sqrt, sin, cos, pi, tau
-from random import random
+from random import uniform
 
 from go import Vector4D, Lorentz
 from model.pointsprite import PointSpriteDoppler
@@ -38,8 +38,10 @@ class Flame(object):
 
         self.vertices = vertices
         self.a = self.vertices[0].squared_norm()
-        self.sizes = [BOX.Y*psize*(0.9 + random()*0.2) for _ in self.vertices]
-        self.SS = [S * (0.5 + random()*2.0) for _ in self.vertices]
+        # Give each vertex a small random variation in the size
+        ideal_size = BOX.Y * psize
+        self.sizes = [ideal_size * uniform(0.9, 1.1) for _ in self.vertices]
+        self.SS = [S * uniform(0.5, 2.5) for _ in self.vertices]
 
     def draw(self, X, Xp, L, LL=None, color=None):
         a = self.a
