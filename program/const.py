@@ -1,20 +1,22 @@
-import os as _os
-import sys as _sys
+import os
+import sys
 
-
-path = _os.path.abspath(_os.path.dirname(_sys.argv[0]))
-_input_path = _os.path.join(path, "resources")
-sdl2_path = _os.path.join(_input_path, "bin", _os.name)
-if _os.path.isdir(sdl2_path):
-	_os.environ["PYSDL2_DLL_PATH"] = sdl2_path
+# To import SDL2, we first set the $PYSDL2_DLL_PATH environment variable.
+# It is either in resources/bin/posix/ (or resources/bin/nt), or else we'll try
+# to find it in the topmost directory of the repo.
+path = os.path.abspath(os.path.dirname(sys.argv[0]))
+_input_path = os.path.join(path, "resources")
+sdl2_path = os.path.join(_input_path, "bin", os.name)
+if os.path.isdir(sdl2_path):
+	os.environ["PYSDL2_DLL_PATH"] = sdl2_path
 else:
-	_os.environ["PYSDL2_DLL_PATH"] = path
+	os.environ["PYSDL2_DLL_PATH"] = path
 
 import sdl2
 
-IMG_DIR    = _os.path.join(_input_path, "img/")
-CONFIG_DIR = _os.path.join(_input_path, "config/")
-SCRIPT_DIR = _os.path.join(_input_path, "script/")
+IMG_DIR    = os.path.join(_input_path, "img/")
+CONFIG_DIR = os.path.join(_input_path, "config/")
+SCRIPT_DIR = os.path.join(_input_path, "script/")
 
 VIEW_ANGLE = 60.0
 GAME_NAME = b"Light Speed Battle"
