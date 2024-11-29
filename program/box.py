@@ -1,6 +1,5 @@
-# coding: utf8
-# box.py
-import os, sys
+import os
+import sys
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -158,15 +157,11 @@ class _Box(object):
     def save(self):
         if self.SAVE:
             try:
-                f = open(os.path.join(CONFIG_DIR, "setting.ini"), "w")
-                f.write("DISPLAY_SIZE_X=%i\n"%self.X)
-                f.write("DISPLAY_SIZE_Y=%i\n"%self.Y)
-                if self.FULL_SCREEN:
-                    f.write("FULL_SCREEN=True\n")
-                else:
-                    f.write("FULL_SCREEN=False\n")
-                f.write("MODE=%s\n"%self.MODE)
-                f.close()
+                with open(os.path.join(CONFIG_DIR, "setting.ini"), "w") as f:
+                    f.write(f"DISPLAY_SIZE_X={self.X}\n")
+                    f.write(f"DISPLAY_SIZE_Y={self.Y}\n")
+                    f.write(f"FULL_SCREEN={self.FULL_SCREEN}\n")
+                    f.write(f"MODE={self.MODE}\n")
             except:
                 pass
 
