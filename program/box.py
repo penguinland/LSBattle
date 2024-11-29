@@ -7,7 +7,7 @@ from OpenGL.GLU import *
 import sdl2
 import sdl2.ext
 
-from program.const import VIEW_ANGLE, GAME_NAME, CONFIG_DIR, disp_sizes
+from program.const import VIEW_ANGLE, GAME_NAME, CONFIG_DIR, DISP_SIZES
 from program import script
 
 
@@ -44,8 +44,8 @@ class _Box(object):
                         self.MODE = "NORMAL"
                     elif v == "HARD":
                         self.MODE = "HARD"
-            if (X, Y) not in disp_sizes:
-                X, Y = disp_sizes[0]
+            if (X, Y) not in DISP_SIZES:
+                X, Y = DISP_SIZES[0]
             self.X = X
             self.Y = Y
             self.FULL_SCREEN = FULL_SCREEN
@@ -58,7 +58,7 @@ class _Box(object):
             w_mode = sdl2.SDL_DisplayMode()
             sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
             if self.X > w_mode.w or self.Y > w_mode.h:
-                self.X, self.Y = disp_sizes[0]
+                self.X, self.Y = DISP_SIZES[0]
                 self.SAVE = True
             flg = sdl2.SDL_WINDOW_OPENGL
             if self.FULL_SCREEN:
@@ -137,8 +137,8 @@ class _Box(object):
         self.far_clip = script.ui.far_clip*scale
 
     def set_displaysize(self, i):
-        if disp_sizes[i][0] != self.X and disp_sizes[i][1] != self.Y:
-            self.X, self.Y = disp_sizes[i]
+        if DISP_SIZES[i][0] != self.X and DISP_SIZES[i][1] != self.Y:
+            self.X, self.Y = DISP_SIZES[i]
             self.FULL_SCREEN = False
             self.SAVE = True
             self.sdl2_quit()
