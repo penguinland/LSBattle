@@ -1,5 +1,3 @@
-# coding: utf8
-# entity/arms.py
 from math import sqrt, sin, cos, pi
 
 from go import Vector3, Vector4D, Lorentz
