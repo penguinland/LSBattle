@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-# flame.py
 from math import sqrt, sin, cos, pi
 from random import random
 
@@ -10,7 +8,6 @@ from program.utils import DY_TEXTURE_KYU
 
 
 class Flame(object):
-
     def __init__(self, S=0.5, v=0.6, n=5, m=10,
                  color=(1.0, 0.9, 0.99, 0.6), psize=0.02):
         """
@@ -64,7 +61,4 @@ class Flame(object):
         if vertices:
             self.model.draw(Xp, L, vertices, U, sizes, color=color)
             return True
-        elif vc == 0:
-            return False
-        else:
-            return True
+        return (vc == 0)
