@@ -26,7 +26,7 @@ class Flame(object):
         vertices = [Vector4D(t, 0.0, 1.0, 0.0)]
         for i in range(1, m):  # 0 through m, not including 0 or m itself
             phi = pi * i / m
-            # To stagger the effects, every other one will be rotated half a
+            # To stagger the particles, every other one will be rotated half a
             # line of longitude off from the previous/next row.
             offset = 0.5 if (i % 2 == 1) else 0.0
             for j in range(n):
