@@ -61,9 +61,9 @@ class _Box(object):
         if self.X > w_mode.w or self.Y > w_mode.h:
             self.X, self.Y = DISP_SIZES[0]
             self._should_save = True
-        flg = sdl2.SDL_WINDOW_OPENGL
+        flags = sdl2.SDL_WINDOW_OPENGL
         if self.FULL_SCREEN:
-            flg |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
+            flags |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
             self.X = w_mode.w
             self.Y = w_mode.h
             self._should_save = True
@@ -71,7 +71,7 @@ class _Box(object):
                                             sdl2.SDL_WINDOWPOS_UNDEFINED,
                                             sdl2.SDL_WINDOWPOS_UNDEFINED,
                                             self.X, self.Y,
-                                            flg)
+                                            flags)
         if not self.window:
             print((sdl2.SDL_GetError()))
             sdl2.ext.SDL_quit()
