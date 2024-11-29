@@ -51,7 +51,6 @@ class _Box(object):
             self.FULL_SCREEN = FULL_SCREEN
         except:
             self.SAVE = True
-            pass
 
     def game_init(self):
         if not sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) and self.window is None:

@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 
+
 def log_error():
     exc_type, exc_value, exc_traceback = sys.exc_info()
     if os.name == "posix":
@@ -16,6 +17,7 @@ def log_error():
     traceback.print_exception(exc_type, exc_value, exc_traceback,
                               file=open(p, "w")
                               )
+
 
 try:
     import OpenGL
