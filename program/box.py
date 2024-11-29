@@ -22,7 +22,7 @@ class _Box(object):
         self.Y = 600
         self.FULL_SCREEN = False
         self.MODE = "EASY"
-        self.SAVE = False
+        self._should_save = False  # Whether to write to setting.ini
         try:
             for line in open(CONFIG_DIR+"setting.ini"):
                 line = line.strip()
@@ -49,7 +49,7 @@ class _Box(object):
             self.Y = Y
             self.FULL_SCREEN = FULL_SCREEN
         except:
-            self.SAVE = True
+            self._should_save = True
 
     def game_init(self):
         if not sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) and self.window is None:
@@ -58,13 +58,13 @@ class _Box(object):
             sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
             if self.X > w_mode.w or self.Y > w_mode.h:
                 self.X, self.Y = DISP_SIZES[0]
-                self.SAVE = True
+                self._should_save = True
             flg = sdl2.SDL_WINDOW_OPENGL
             if self.FULL_SCREEN:
                 flg |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
                 self.X = w_mode.w
                 self.Y = w_mode.h
-                self.SAVE = True
+                self._should_save = True
             self.window = sdl2.SDL_CreateWindow(GAME_NAME,
                                                 sdl2.SDL_WINDOWPOS_UNDEFINED,
                                                 sdl2.SDL_WINDOWPOS_UNDEFINED,
@@ -139,23 +139,23 @@ class _Box(object):
         if DISP_SIZES[i][0] != self.X and DISP_SIZES[i][1] != self.Y:
             self.X, self.Y = DISP_SIZES[i]
             self.FULL_SCREEN = False
-            self.SAVE = True
+            self._should_save = True
             self.sdl2_quit()
             self.game_init()
 
     def set_fullscreen(self):
         if not self.FULL_SCREEN:
             self.FULL_SCREEN = True
-            self.SAVE = True
+            self._should_save = True
             self.sdl2_quit()
             self.game_init()
 
     def set_mode(self, mode):
         self.MODE = mode
-        self.SAVE = True
+        self._should_save = True
 
     def save(self):
-        if not self.SAVE:
+        if not self._should_save:
             return
 
         try:
