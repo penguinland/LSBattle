@@ -2,6 +2,8 @@ from OpenGL.GL import *
 
 from program.utils import compile_program, load_texture, DY_TEXTURE_KYU
 
+# TODO: simplify this into a single class, with a single _draw() function.
+
 
 _vshader = """
 #version 120
@@ -84,20 +86,22 @@ class PointSprite(object):
         self._draw(vertices, size)
         glUseProgram(0)
 
-    def _draw_0_0(self, vertices, size):
+    def _draw_0_0(self, vertices, size):  # size and vertices both in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
             glUniform1f(self.size_local, size)
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
-    def _draw_0_1(self, vertices, sizes):
+
+    def _draw_0_1(self, vertices, sizes):  # only vertices in __init__
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*self.n)(*sizes))
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
         glDisableVertexAttribArray(self.size_local)
-    def _draw_1_0(self, vertices, size):
+
+    def _draw_1_0(self, vertices, size):  # only size in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
@@ -105,13 +109,15 @@ class PointSprite(object):
         n = len(vertices)
         glVertexPointer(3, GL_FLOAT, 0, (GLfloat*n)(*vertices))
         glDrawArrays(GL_POINTS, 0, n//3)
-    def _draw_1_1(self, vertices, sizes):
+
+    def _draw_1_1(self, vertices, sizes):  # nothing supplied in __init__
         n = len(sizes)
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*n)(*sizes))
         glVertexPointer(3, GL_FLOAT, 0, (GLfloat*(n*3))(*vertices))
         glDrawArrays(GL_POINTS, 0, n)
         glDisableVertexAttribArray(self.size_local)
+
 
 _vshader_doppler = """
 #version 120
@@ -200,7 +206,6 @@ void main() {
 }
 """
 class PointSpriteDoppler(object):
-
     def __init__(self, vertices=None, size=None, color=None, size_w=True, texture=DY_TEXTURE_KYU):
         if vertices is not None:
             n = len(vertices)
@@ -260,7 +265,7 @@ class PointSpriteDoppler(object):
         self._draw(vertices, size)
         glUseProgram(0)
 
-    def _draw_0_0(self, vertices, size):
+    def _draw_0_0(self, vertices, size):  # size and vertices both in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
@@ -268,14 +273,14 @@ class PointSpriteDoppler(object):
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
 
-    def _draw_0_1(self, vertices, sizes):
+    def _draw_0_1(self, vertices, sizes):  # only vertices in __init__
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*self.n)(*sizes))
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
         glDisableVertexAttribArray(self.size_local)
 
-    def _draw_1_0(self, vertices, size):
+    def _draw_1_0(self, vertices, size):  # only size in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
@@ -284,7 +289,7 @@ class PointSpriteDoppler(object):
         glVertexPointer(3, GL_FLOAT, 0, (GLfloat*n)(*vertices))
         glDrawArrays(GL_POINTS, 0, n//3)
 
-    def _draw_1_1(self, vertices, sizes):
+    def _draw_1_1(self, vertices, sizes):  # nothing supplied in __init__
         n = len(sizes)
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*n)(*sizes))
