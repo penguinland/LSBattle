@@ -141,6 +141,10 @@ class Star(object):
 
 
 class SolarSystem(object):
+    """
+    We act as a collection of stars: we draw all the stars, check for collisions
+    with them all, and also confusingly act as a dict containing them all.
+    """
     star_datum = None
 
     def __init__(self, world, Xp, scale):
@@ -162,7 +166,7 @@ class SolarSystem(object):
             return
         rescale = 1.0 / c
         cls.star_datum = {}
-        # TODO: where is this!? I can't find stars in
+        # TODO: where is this!? I can't find `stars` in
         # program/script/world/solar.py
         for star_data in script.world.solar.stars:
             star_data.sphere_radius *= rescale
