@@ -11,6 +11,70 @@ from program.const import IMG_DIR, c
 from program.text import drawSentence3d
 
 
+def _calc_star_pos(Xp, scale, star_datum):
+    """
+    We return a dict from star names to (4D) locations. The names come from
+    star_datum, and the locations are offset and scaled by Xp and scale.
+    """
+    def calc_pos(r, phi):  # Helper
+        cos_p = cos(phi * pi / 180)
+        sin_p = sin(phi * pi / 180)
+        return Vector4D(0.0, sin_p * r, 0.0, cos_p * r)
+
+    # Map from names of celestial bodies to their initial positions
+    star_pos = {}
+
+    # Initialize the star in the center of the map. All other stars will
+    # somehow be placed relative to this one.
+    center = script.world.solar.center.lower()
+    if center not in star_datum:
+        if "sun" not in star_datum:
+            return
+        else:
+            center = "sun"
+    offset = Vector4D(0.0,
+                      script.world.solar.dx,
+                      script.world.solar.dy,
+                      script.world.solar.dz) * scale
+    star_pos[center] = Xp + offset
+
+    loop_count = 0
+    flg = True
+    # We put in all the celestial bodies. Some orbit others: we put in all
+    # primary ones first (e.g., the sun), then the ones that depend on them
+    # (e.g., the earth), and finally the ones that depend on _them_ (e.g.,
+    # the moon).
+    while loop_count < 3 and flg:
+        loop_count += 1
+        flg = False
+        for name, star_data in star_datum.items():
+            if name in star_pos:
+                continue  # Already finished with this one last time
+
+            if star_data.primary_star is not None:
+                pname = star_datum[star_data.primary_star].name
+                if pname in star_pos:
+                    # The parent star is already initialized; put this one
+                    # at the right offset from it.
+                    pos = calc_pos(star_data.orbital_radius,
+                                   star_data.orbital_phi)
+                    star_pos[name] = star_pos[pname] + pos
+                    continue
+
+            for sname in star_pos:
+                sdata = star_datum[sname]
+                if name == sdata.primary_star:
+                    pos = calc_pos(sdata.orbital_radius,
+                                   sdata.orbital_phi)
+                    star_pos[name] = star_pos[sname] - pos
+                    break
+            else:
+                # We aren't a parent of any pre-existing star, so go through
+                # the whole loop again.
+                flg = True
+    return star_pos
+
+
 def _high_func(sphere_radius, tilt):
     """
     Returns a function that scales and rotates points by the given radius and
@@ -84,11 +148,13 @@ class SolarSystem(object):
     def __init__(self, world, Xp, scale):
         self.world = world
         self.stars = {}
+
+        # Try to initialize star_datum
         self.read_data()
         if not self.star_datum:
             return
 
-        self.star_pos = self._calc_star_pos(Xp, scale, self.star_datum)
+        self.star_pos = _calc_star_pos(Xp, scale, self.star_datum)
         self.stars = {name: Star(pos, self.star_datum[name])
                       for name, pos in self.star_pos.items()}
 
@@ -107,64 +173,6 @@ class SolarSystem(object):
             pname = star_data.primary_star
             star_data.primary_star = pname.lower() if pname is not None else None
             cls.star_datum[star_data.name] = star_data
-
-    def _calc_star_pos(self, Xp, scale, star_datum):
-        def calc_pos(r, phi):  # Helper
-            cos_p = cos(phi * pi / 180)
-            sin_p = sin(phi * pi / 180)
-            return Vector4D(0.0, sin_p * r, 0.0, cos_p * r)
-
-        # Map from names of celestial bodies to their initial positions
-        self.star_pos = {}
-
-        # Initialize the star in the center of the map. All other stars will
-        # somehow be placed relative to this one.
-        center = script.world.solar.center.lower()
-        if center not in star_datum:
-            if "sun" not in star_datum:
-                return
-            else:
-                center = "sun"
-        offset = Vector4D(0.0,
-                          script.world.solar.dx,
-                          script.world.solar.dy,
-                          script.world.solar.dz) * scale
-        self.star_pos[center] = Xp + offset
-
-        loop_count = 0
-        flg = True
-        # We put in all the celestial bodies. Some orbit others: we put in all
-        # primary ones first (e.g., the sun), then the ones that depend on them
-        # (e.g., the earth), and finally the ones that depend on _them_ (e.g.,
-        # the moon).
-        while loop_count < 3 and flg:
-            loop_count += 1
-            flg = False
-            for name, star_data in star_datum.items():
-                if name in self.star_pos:
-                    continue  # Already finished with this one last time
-
-                if star_data.primary_star is not None:
-                    pname = star_datum[star_data.primary_star].name
-                    if pname in self.star_pos:
-                        # The parent star is already initialized; put this one
-                        # at the right offset from it.
-                        pos = calc_pos(star_data.orbital_radius,
-                                       star_data.orbital_phi)
-                        self.star_pos[name] = self.star_pos[pname] + pos
-                        continue
-
-                for sname in self.star_pos:
-                    sdata = star_datum[sname]
-                    if name == sdata.primary_star:
-                        pos = calc_pos(sdata.orbital_radius,
-                                       sdata.orbital_phi)
-                        self.star_pos[name] = self.star_pos[sname] - pos
-                        break
-                else:
-                    # We aren't a parent of any pre-existing star, so go through
-                    # the whole loop again.
-                    flg = True
 
     def __getitem__(self, key):
         return self.stars[key]
