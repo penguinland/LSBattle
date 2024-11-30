@@ -11,11 +11,16 @@ class Block(object):
         self.__dict__[key] = value
 
     def _check(self):
+        """
+        This will be overridden in subclasses! Up here, the check is to walk all
+        fields and recursively check the other Blocks.
+        """
         for name in dir(self):
-            if not name.startswith("_"):
-                obj = getattr(self, name)
-                if isinstance(obj, Block):
-                    obj._check()
+            if name.startswith("_"):  # Something internal
+                continue
+            obj = getattr(self, name)
+            if isinstance(obj, Block):
+                obj._check()
 
 
 def color_func(line):
