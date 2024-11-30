@@ -2,6 +2,15 @@ import re
 
 
 class Block(object):
+    """
+    SMELL ALERT! This is a way to conflate a Python class with a Javascript
+    object. The object acts like a dict where the keys of the dict are fields of
+    the class.
+
+    I wonder if this can be removed in favor of something more straightforward,
+    but don't yet understand how this all gets used, so am wary of making such a
+    change yet.
+    """
     def __contains__(self, key):
         return key in self.__dict__
 
