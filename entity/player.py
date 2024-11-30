@@ -39,10 +39,16 @@ class PlayerState(object):
             }
 
     def gun_change(self):
-        self.gun_mode = (self.gun_mode+1)%self.gun_num
+        """
+        Switch to the next gun
+        """
+        self.gun_mode = (self.gun_mode + 1) % self.gun_num
         self.make_gun_icon()
 
     def gun_get(self):
+        """
+        Add the next gun to the player's inventory, and switch to it immediately
+        """
         if self.gun_num < self.max_gun_num:
             self.gun_num += 1
         self.gun_mode = self.gun_num - 1
@@ -117,8 +123,8 @@ class Gun(object):
             self._shoot(ds, par_frame)
             keys.k_bullet -= self.reload_time * par_frame
 
-class Player(object):
 
+class Player(object):
     def __init__(self, world, level, state, pos):
         self.world = world
         self.state = state
