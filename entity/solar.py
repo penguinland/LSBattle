@@ -114,9 +114,11 @@ class SolarSystem(object):
             sin_p = sin(phi * pi / 180)
             return Vector4D(0.0, sin_p * r, 0.0, cos_p * r)
 
+        # Map from names of celestial bodies to their initial positions
         self.star_pos = {}
 
-        # Initialize the star in the center of the map
+        # Initialize the star in the center of the map. All other stars will
+        # somehow be placed relative to this one.
         center = script.world.solar.center.lower()
         if center not in star_datum:
             if "sun" not in star_datum:
@@ -131,20 +133,27 @@ class SolarSystem(object):
 
         loop_count = 0
         flg = True
+        # We put in all the celestial bodies. Some orbit others: we put in all
+        # primary ones first (e.g., the sun), then the ones that depend on them
+        # (e.g., the earth), and finally the ones that depend on _them_ (e.g.,
+        # the moon).
         while loop_count < 3 and flg:
             loop_count += 1
             flg = False
-            for name in star_datum:
+            for name, star_data in star_datum.items():
                 if name in self.star_pos:
-                    continue
-                star_data = star_datum[name]
+                    continue  # Already finished with this one last time
+
                 if star_data.primary_star is not None:
                     pname = star_datum[star_data.primary_star].name
                     if pname in self.star_pos:
+                        # The parent star is already initialized; put this one
+                        # at the right offset from it.
                         pos = calc_pos(star_data.orbital_radius,
                                        star_data.orbital_phi)
                         self.star_pos[name] = self.star_pos[pname] + pos
                         continue
+
                 for sname in self.star_pos:
                     sdata = star_datum[sname]
                     if name == sdata.primary_star:
@@ -153,6 +162,8 @@ class SolarSystem(object):
                         self.star_pos[name] = self.star_pos[sname] - pos
                         break
                 else:
+                    # We aren't a parent of any pre-existing star, so go through
+                    # the whole loop again.
                     flg = True
 
     def __getitem__(self, key):
