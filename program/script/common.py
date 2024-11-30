@@ -51,14 +51,16 @@ def color_func(line):
     return color
 
 
+# TODO: use a more standard caching decorator instead of _func_hash
 s_float = float
 s_int   = lambda x:int(float(x))
-_func_hash = {}
+_func_hash = {}  # Memoize the results
 re_type = re.compile(r"<type (['\"])(\w+)\1>")
 def high_func_num(func, m, M, none=False):
     key = (id(func), m, M, none)
     if key in _func_hash:
         return _func_hash[key]
+
     def f(line):
         if none and line == "None":
             return None
@@ -69,6 +71,7 @@ def high_func_num(func, m, M, none=False):
             return M
         else:
             return value
+
     s = str(func if func is not s_int else int)
     match = re_type.match(s)
     if match:
@@ -79,6 +82,10 @@ def high_func_num(func, m, M, none=False):
 
 
 def func_str(line):
+    """
+    If the provided line is "None", we return None, and otherwise we return the
+    line itself.
+    """
     line = line.strip()
     if line == "None":
         return None
