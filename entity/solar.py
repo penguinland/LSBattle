@@ -88,9 +88,9 @@ class SolarSystem(object):
         if not self.star_datum:
             return
 
-        self.calc_star_pos(Xp, scale)
-        self.stars = {name: Star(self.star_pos[name], self.star_datum[name])
-                      for name in self.star_pos}
+        self._calc_star_pos(Xp, scale)
+        self.stars = {name: Star(pos, self.star_datum[name])
+                      for name, pos in self.star_pos.items()}
 
     @classmethod
     def read_data(cls):
@@ -98,6 +98,8 @@ class SolarSystem(object):
             return
         rescale = 1.0 / c
         cls.star_datum = {}
+        # TODO: where is this!? I can't find stars in
+        # program/script/world/solar.py
         for star_data in script.world.solar.stars:
             star_data.sphere_radius *= rescale
             star_data.orbital_radius *= rescale
@@ -106,11 +108,12 @@ class SolarSystem(object):
             star_data.primary_star = pname.lower() if pname is not None else None
             cls.star_datum[star_data.name] = star_data
 
-    def calc_pos(self, r, phi):
-        cos_p = cos(phi * pi / 180)
-        sin_p = sin(phi * pi / 180)
-        return Vector4D(0.0, sin_p*r, 0.0, cos_p*r)
-    def calc_star_pos(self, Xp, scale):
+    def _calc_star_pos(self, Xp, scale):
+        def calc_pos(r, phi):  # Helper
+            cos_p = cos(phi * pi / 180)
+            sin_p = sin(phi * pi / 180)
+            return Vector4D(0.0, sin_p * r, 0.0, cos_p * r)
+
         self.star_pos = {}
         center = script.world.solar.center.lower()
         if center not in self.star_datum:
@@ -135,15 +138,15 @@ class SolarSystem(object):
                 if star_data.primary_star is not None:
                     pname = self.star_datum[star_data.primary_star].name
                     if pname in self.star_pos:
-                        pos = self.calc_pos(star_data.orbital_radius,
-                                            star_data.orbital_phi)
+                        pos = calc_pos(star_data.orbital_radius,
+                                       star_data.orbital_phi)
                         self.star_pos[name] = self.star_pos[pname] + pos
                         continue
                 for sname in self.star_pos:
                     sdata = self.star_datum[sname]
                     if name == sdata.primary_star:
-                        pos = self.calc_pos(sdata.orbital_radius,
-                                            sdata.orbital_phi)
+                        pos = calc_pos(sdata.orbital_radius,
+                                       sdata.orbital_phi)
                         self.star_pos[name] = self.star_pos[sname] - pos
                         break
                 else:
