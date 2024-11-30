@@ -168,7 +168,7 @@ class PointSprite(object):
 
         self.texture_id = load_texture(texture)
 
-    def draw(self, Xp, L, vertices=None, size=None, color=None):
+    def draw(self, Xp, L, vertices=None, U=None, size=None, color=None):
         glUseProgram(self.program_id)
         if color is None:
             glColor(*self.color)
