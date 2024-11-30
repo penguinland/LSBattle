@@ -1,3 +1,8 @@
+"""
+This file is all about using OpenGL to draw things. It provides the PointSprite
+class.
+"""
+
 from OpenGL.GL import *
 
 from program.utils import compile_program, load_texture, DY_TEXTURE_KYU
