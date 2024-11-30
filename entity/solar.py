@@ -38,19 +38,18 @@ def _calc_star_pos(Xp, scale, star_datum):
                       script.world.solar.dz) * scale
     star_pos[center] = Xp + offset
 
-    loop_count = 0
-    flg = True
-    # We put in all the celestial bodies. Some orbit others: we put in all
-    # primary ones first (e.g., the sun), then the ones that depend on them
-    # (e.g., the earth), and finally the ones that depend on _them_ (e.g.,
-    # the moon).
-    while loop_count < 3 and flg:
-        loop_count += 1
-        flg = False
+    # We now put in all the other celestial bodies. They all have positions
+    # relative to others: now that the center star is in, repeatedly put in all
+    # stars that define themselves relative to a previously-placed star or
+    # have a previously-placed star defined relative to themselves.
+    making_progress = True
+    while making_progress:
+        making_progress = False
         for name, star_data in star_datum.items():
-            if name in star_pos:
-                continue  # Already finished with this one last time
+            if name in star_pos:  # Already finished with this one last time
+                continue
 
+            # See if the parent of this star is already set up.
             if star_data.primary_star is not None:
                 pname = star_datum[star_data.primary_star].name
                 if pname in star_pos:
@@ -59,19 +58,18 @@ def _calc_star_pos(Xp, scale, star_datum):
                     pos = calc_pos(star_data.orbital_radius,
                                    star_data.orbital_phi)
                     star_pos[name] = star_pos[pname] + pos
+                    making_progress = True
                     continue
 
+            # See if any child of this star is already set up.
             for sname in star_pos:
                 sdata = star_datum[sname]
                 if name == sdata.primary_star:
                     pos = calc_pos(sdata.orbital_radius,
                                    sdata.orbital_phi)
                     star_pos[name] = star_pos[sname] - pos
+                    making_progress = True
                     break
-            else:
-                # We aren't a parent of any pre-existing star, so go through
-                # the whole loop again.
-                flg = True
     return star_pos
 
 
