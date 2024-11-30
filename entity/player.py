@@ -161,7 +161,8 @@ class Player(object):
         self.on_position = PointSprite(color=script.player.window.color,
                                        size=BOX.Y*script.player.window.size,
                                        size_w=False,
-                                       texture=tex)
+                                       texture=tex,
+                                       doppler_shifted=False)
         r, g, b, a = script.player.window.pre_color
         self.lines = Lines([r, g, b, a/2])
 

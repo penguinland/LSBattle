@@ -2,7 +2,7 @@ from math import sqrt, sin, cos, pi
 
 from go import Vector3, Vector4D, Lorentz
 from go import hit_check
-from model.pointsprite import PointSpriteDoppler
+from model.pointsprite import PointSprite
 from model.flame import Flame
 from program.box import BOX
 from program.utils import DY_TEXTURE_KYU
@@ -110,7 +110,7 @@ class Bullets(_BaseBullets):
         self.size = BOX.X * psize
         self.n = 0
         self.hit_n = 0
-        self.model = PointSpriteDoppler(size=self.size, color=color, texture=DY_TEXTURE_KYU)
+        self.model = PointSprite(size=self.size, color=color, texture=DY_TEXTURE_KYU)
         self.color = [1.0 if i > 1.0 else i for i in Vector3(color[:3])*2.0] + [0.8]
         self.flame = Flame(S=0.3, v=0.4, psize=psize*2, color=self.color)
 
@@ -152,7 +152,7 @@ class SlowBullets(_BaseBullets):
         self.size = BOX.X * psize
         self.n = 0
         self.hit_n = 0
-        self.model = PointSpriteDoppler(size=self.size, color=color, texture=DY_TEXTURE_KYU)
+        self.model = PointSprite(size=self.size, color=color, texture=DY_TEXTURE_KYU)
         self.color = [1.0 if i > 1.0 else i for i in Vector3(color[:3])*2.0] + [0.4]
         self.flame = Flame(S=0.3, v=0.4, psize=psize*0.5, color=self.color)
 

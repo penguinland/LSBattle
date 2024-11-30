@@ -2,7 +2,7 @@ from math import sqrt, sin, cos, pi, tau
 from random import uniform
 
 from go import Vector4D, Lorentz
-from model.pointsprite import PointSpriteDoppler
+from model.pointsprite import PointSprite
 from program.box import BOX
 from program.utils import DY_TEXTURE_KYU
 
@@ -17,7 +17,7 @@ class Flame(object):
         m: int, number of particles in azimuthal angle direction.
         psize: float, size of each particle consisting of the flame, relative to screen size.
         """
-        self.model = PointSpriteDoppler(color=color, texture=DY_TEXTURE_KYU)
+        self.model = PointSprite(color=color, texture=DY_TEXTURE_KYU)
         t = 1.0/v
 
         # We use polar coordinates to create a bunch of vertices. Put one at the
