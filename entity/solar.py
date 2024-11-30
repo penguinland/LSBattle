@@ -19,7 +19,6 @@ def _high_func(sphere_radius, tilt):
 
 
 class Star(object):
-
     def __init__(self, X, star_data):
         func = _high_func(star_data.sphere_radius, star_data.tilt)
         self.radius = star_data.sphere_radius

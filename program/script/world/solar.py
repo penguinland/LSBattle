@@ -2,9 +2,10 @@ from ..common import Block, high_func_num, func_str, color_func
 
 
 _default = [
-    ["Earth", "earth.jpg", "star",   6378000, 149597870700,  0.0, 23.4, "Sun", 1000],
-    ["Sun",   "sun.gif",   "star", 695500000,            0,  0.0,  0.0,  None, 1000],
-    ["Moon",  "moon.jpg",  "star",   1738000,    384400000, 180.,  0.0, "Earth", 1000],
+    #   Name        image   model     radius  orbit_radius    phi  tilt     star    HP
+    ["Earth", "earth.jpg", "star",   6378000, 149597870700,   0.0, 23.4,   "Sun", 1000],
+    [  "Sun",   "sun.gif", "star", 695500000,            0,   0.0,  0.0,    None, 1000],
+    [ "Moon",  "moon.jpg", "star",   1738000,    384400000, 180.0,  0.0, "Earth", 1000],
 ]
 
 
