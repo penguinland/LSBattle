@@ -258,10 +258,11 @@ class PointSpriteDoppler(object):
         glUniformMatrix4fv(self.mat_local, 1, GL_FALSE, L.to_glsl())
         glEnableVertexAttribArray(self.U_local)
         if U:
-            glVertexAttribPointer(self.U_local, 4, GL_FLOAT, GL_FALSE, 0, (GLfloat*len(U))(*U))
+            # TODO: name this better when you understand what it is
+            vector = (GLfloat*len(U))(*U)
         else:
-            glVertexAttribPointer(self.U_local, 4, GL_FLOAT, GL_FALSE, 0,
-                (GLfloat*(self.n*4))(*([0.0,0.0,0.0,1.0]*self.n)))
+            vector = (GLfloat*(self.n*4))(*([0.0,0.0,0.0,1.0]*self.n))
+        glVertexAttribPointer(self.U_local, 4, GL_FLOAT, GL_FALSE, 0, vector)
         self._draw(vertices, size)
         glUseProgram(0)
 
