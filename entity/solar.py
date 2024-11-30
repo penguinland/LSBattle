@@ -50,6 +50,7 @@ class Star(object):
     def draw(self, Xp, L, LL):
         if self.hp <= 0:
             if not self.flame.draw(self.X_dead, Xp, L):
+                # All flame particles have burned out
                 self.alive = False
             return
 
@@ -59,7 +60,7 @@ class Star(object):
         r = -dx.t
         if r > 0.5 * BOX.far_clip:
             s = 0.05 * BOX.far_clip / r
-            X = Xp + dX*s
+            X = Xp + dX * s
             self.model.draw(Xp, L, LL, X=X, R=Matrix44.scale(s))
         else:
             self.model.draw(Xp, L, LL, X=self.X)

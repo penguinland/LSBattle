@@ -44,6 +44,10 @@ class Flame(object):
         self.SS = [S * uniform(0.5, 2.5) for _ in self.vertices]
 
     def draw(self, X, Xp, L, LL=None, color=None):
+        """
+        We return whether we drew any flames (whether any of the particles has
+        not yet reached the end of its life).
+        """
         a = self.a
         dX = (Xp - X)*(1.0/a)
         c = dX.squared_norm()
