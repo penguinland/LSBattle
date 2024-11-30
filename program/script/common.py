@@ -55,6 +55,14 @@ def color_func(line):
 _func_hash = {}  # Memoize the results
 re_type = re.compile(r"<type (['\"])(\w+)\1>")
 def high_func_num(func, min_value, max_value, can_be_none=False):
+    """
+    Returns a function that takes in a string and parses it to a value.
+
+    The func converts a string to a value.
+    The min_value and max_value clamp the value to a range.
+    If can_be_none is set, the function we return will itself return None when
+    given the string "None".
+    """
     key = (id(func), min_value, max_value, can_be_none)
     if key in _func_hash:
         return _func_hash[key]
