@@ -7,6 +7,7 @@ from program.utils import compile_program
 
 class WireFrame(object):
     vertices = None
+
     def __init__(self, scale):
         self.L = script.world.wireframe.range * scale
         self.N = script.world.wireframe.div
@@ -20,33 +21,33 @@ class WireFrame(object):
             return
         def add(xx, yy, zz, a):
             vertices.extend([xx, yy, zz])
-            if a < N*c:
-                indices.append(len(vertices)//3-1)
-                indices.append(len(vertices)//3)
+            if a < N * c:
+                indices.append(len(vertices) // 3 -1)
+                indices.append(len(vertices) // 3)
         c = script.world.wireframe.inner_div
         vertices = []
         indices = []
-        n = 2*N + 1
-        for i in range(-N, N+1):
-            xx = (i+0.5)*L/N
-            for j in range(-N, N+1):
-                yy = (j+0.5)*L/N
-                for k in range(-N*c, N*c+1):
-                    zz = (k+0.5*c)*L/(N*c)
+        n = 2 * N + 1
+        for i in range(-N, N + 1):
+            xx = (i + 0.5) * L / N
+            for j in range(-N, N + 1):
+                yy = (j + 0.5) * L / N
+                for k in range(-N * c, N * c + 1):
+                    zz = (k + 0.5 * c) * L / (N * c)
                     add(xx, yy, zz, k)
-        for i in range(-N, N+1):
-            xx = (i+0.5)*L/N
-            for j in range(-N, N+1):
-                zz = (j+0.5)*L/N
-                for k in range(-N*c, N*c+1):
-                    yy = (k+0.5*c)*L/(N*c)
+        for i in range(-N, N + 1):
+            xx = (i + 0.5) * L / N
+            for j in range(-N, N + 1):
+                zz = (j + 0.5) * L / N
+                for k in range(-N * c, N * c + 1):
+                    yy = (k + 0.5 * c) * L / (N * c)
                     add(xx, yy, zz, k)
-        for i in range(-N, N+1):
-            zz = (i+0.5)*L/N
-            for j in range(-N, N+1):
-                yy = (j+0.5)*L/N
-                for k in range(-N*c, N*c+1):
-                    xx = (k+0.5*c)*L/(N*c)
+        for i in range(-N, N + 1):
+            zz = (i + 0.5) * L / N
+            for j in range(-N, N + 1):
+                yy = (j + 0.5) * L / N
+                for k in range(-N*c, N * c + 1):
+                    xx = (k + 0.5 * c) * L / (N * c)
                     add(xx, yy, zz, k)
         cls.vertices = (GLfloat*len(vertices))(*vertices)
         cls.indices = (GLint*len(indices))(*indices)
@@ -81,7 +82,7 @@ class WireFrame(object):
             """)
         self.Xp_local  = glGetUniformLocation(self.program_id, "Xp")
         self.Xo_local  = glGetUniformLocation(self.program_id, "Xo")
-        self.mat_local  = glGetUniformLocation(self.program_id, "lorentz")
+        self.mat_local = glGetUniformLocation(self.program_id, "lorentz")
 
     def draw(self, Xp, L, color=None):
         glLineWidth(script.world.wireframe.line_width)
@@ -90,7 +91,7 @@ class WireFrame(object):
             r, g, b, a = self.color
         else:
             r, g, b, a = color
-        glColor(r, g, b, min(a,10*a/L.get_gamma()))
+        glColor(r, g, b, min(a, 10 * a / L.get_gamma()))
         xp, yp, zp = Xp.get_lis3()
         xo = int(xp/self.lattice_unit) * self.lattice_unit
         yo = int(yp/self.lattice_unit) * self.lattice_unit
