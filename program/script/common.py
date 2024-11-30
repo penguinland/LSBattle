@@ -24,6 +24,15 @@ class Block(object):
 
 
 def color_func(line):
+    """
+    The line provided might be a string containing code that evaluates to a
+    list!?
+
+    Returns a tuple of 4 floats, each between 0.0 and 1.0.
+
+    TODO: what do the floats represent?
+    TODO: come up with a safer approach than calling `eval`.
+    """
     if line == "None":
         return (1.0, 1.0, 1.0, 1.0)
     line = eval(line)[:4]
