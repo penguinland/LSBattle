@@ -6,6 +6,10 @@ from program.utils import compile_program
 
 
 class Lines(object):
+    def __init__(self, color):
+        self.color = color
+        self.load_program()
+
     def load_program(self):
         self.program_id = compile_program(
             """
@@ -34,10 +38,6 @@ class Lines(object):
             """)
         self.vec_local = glGetUniformLocation(self.program_id, "Xp")
         self.mat_local = glGetUniformLocation(self.program_id, "lorentz")
-
-    def __init__(self, color):
-        self.color = color
-        self.load_program()
 
     def draw(self, Xp, L, vertices_1, vertices_2, color=None):
         glUseProgram(self.program_id)
