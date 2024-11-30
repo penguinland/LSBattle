@@ -1,6 +1,4 @@
-# coding: utf8
 # cython: profile=False
-# go/quaternion.pyx
 cimport cython
 from libc.math cimport cos, sin, sqrt, acos
 DEF pi = 3.141592653589793115997963468544185161590576171875

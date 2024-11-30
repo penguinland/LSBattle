@@ -1,15 +1,18 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num, func_str
+
 
 _modes = ["FILL",
           "ALIGN",
           "CUT"]
+
+
 def _image_fill_mode_func(line):
     line = line.strip().upper()
     if line in _modes:
         return line
     else:
         return _modes[0]
+
 
 class backimage(Block):
     def __init__(self):

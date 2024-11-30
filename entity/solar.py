@@ -1,16 +1,14 @@
-# coding: utf8
-# entity/solar.py
 from math import pi, sin, cos
 
 from OpenGL.GL import *
 
 from go import Matrix44, Vector4D, Lorentz, calc_repulsion
-from model.polygon import Polygon
 from model.flame import Flame
-from program.const import IMG_DIR, c
-from program.box import BOX
-from program.text import drawSentence3d
+from model.polygon import Polygon
 from program import script
+from program.box import BOX
+from program.const import IMG_DIR, c
+from program.text import drawSentence3d
 
 
 def _high_func(sphere_radius, tilt):
@@ -18,6 +16,7 @@ def _high_func(sphere_radius, tilt):
     def func(x, y, z):
         return mat.get_rotate([x, y, z])
     return func
+
 
 class Star(object):
 
@@ -65,6 +64,7 @@ class Star(object):
             self.hp -= world.enemies.bullets.hit_check(X1, self.X, self.radius2)
             if self.hp <= 0:
                 self.X_dead = self.X.copy()
+
 
 class SolarSystem(object):
     star_datum = None
@@ -161,5 +161,3 @@ class SolarSystem(object):
                                collision_radius + star.radius,
                                repulsion,
                                acceleration)
-
-

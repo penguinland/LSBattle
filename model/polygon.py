@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-# polygon.py
 import os
 
 from OpenGL.GL import *
@@ -99,6 +97,7 @@ class MqoGpoPolygon(object):
                 raise IOError("%s's model file is not exsit"%(os.path.split(name)[1]))
         raise IOError("%s's model file is not exsit"%(os.path.split(name)[1]+ext))
 
+
 vs_T = """
 #version 120
 uniform vec4 color;
@@ -169,6 +168,8 @@ void main() {
     gl_FragColor = color / 255.0;
 }
 """
+
+
 _polygon_cache = {}
 class Polygon(MqoGpoPolygon):
     def load_program_tex(self):

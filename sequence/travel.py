@@ -1,4 +1,3 @@
-#coding: utf8
 from math import sqrt
 
 from OpenGL import GL
@@ -6,11 +5,11 @@ import sdl2
 import sdl2.ext
 
 from entity import World
-from program.const import *
-from program.box import BOX
-from program.utils import fill_screen, FramePerSec
-from program.text import Sentence, drawSentence
 from program import script
+from program.box import BOX
+from program.const import *
+from program.text import Sentence, drawSentence
+from program.utils import fill_screen, FramePerSec
 from sequence.locals import Keys
 from sequence.stopmenu import StopMenu
 

@@ -1,11 +1,10 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num
 
 from .character import character
 from .bullet import bullet
 from .flame import flame
-from .timer import timer
 from .hpbar import hpbar
+from .timer import timer
 
 
 class Enemy(Block):

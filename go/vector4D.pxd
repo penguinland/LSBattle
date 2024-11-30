@@ -1,7 +1,3 @@
-# coding: utf8
-# go/vector4D.pxd
-
-
 cdef class Vector4D(object):
     cdef double _t, _x, _y, _z
     cpdef Vector4D copy(self)

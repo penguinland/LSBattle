@@ -1,6 +1,4 @@
-#coding: utf8
 import re
-# import  logging
 
 from .common import Block
 

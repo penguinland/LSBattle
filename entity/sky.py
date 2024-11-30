@@ -1,15 +1,13 @@
-# coding: utf8
-# entity/sky.py
 from math import pi, tan
 
 from OpenGL.GL import *
 
 from go import Matrix44
 from model.polygon import MqoGpoPolygon
-from program.box import BOX
-from program.utils import load_texture, compile_program, search_imagefile
-from program.const import IMG_DIR, VIEW_ANGLE
 from program import script
+from program.box import BOX
+from program.const import IMG_DIR, VIEW_ANGLE
+from program.utils import load_texture, compile_program, search_imagefile
 
 
 class Sky(object):

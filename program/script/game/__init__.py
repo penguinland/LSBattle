@@ -1,8 +1,7 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num, func_str
 
-from .stage import stage
 from .score import score
+from .stage import stage
 
 
 class Game(Block):

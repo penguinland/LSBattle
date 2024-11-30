@@ -1,11 +1,12 @@
-#coding: utf8
 from ..common import Block, high_func_num, func_str, color_func
+
 
 _default = [
     ["Earth", "earth.jpg", "star",   6378000, 149597870700,  0.0, 23.4, "Sun", 1000],
     ["Sun",   "sun.gif",   "star", 695500000,            0,  0.0,  0.0,  None, 1000],
     ["Moon",  "moon.jpg",  "star",   1738000,    384400000, 180.,  0.0, "Earth", 1000],
 ]
+
 
 class star(Block):
     def __init__(self):
@@ -29,6 +30,7 @@ class star(Block):
         self._hp_func = high_func_num(int, 1, 10**10)
         self._primary_star_func = func_str
 
+
 class flame(Block):
     def __init__(self):
         self.life = 50.0
@@ -41,6 +43,7 @@ class flame(Block):
         self._size_func  = high_func_num(float, 0.001, 1.0)
         self._color_func = color_func
         self._num_func = high_func_num(int, 4, 20)
+
 
 class solar(Block):
     def __init__(self):

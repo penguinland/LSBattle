@@ -1,10 +1,9 @@
-# coding: utf8
-# utils/texture.py
 from math import sqrt
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from PIL import Image
+
 
 DY_TEXTURE_BETA = 0
 DY_TEXTURE_KYU = 1
@@ -54,6 +53,7 @@ class TextureInfo(object):
         self.height = height
         self.mode = mode
 
+
 _loaded_texture = {}
 _using_texture_id = {}
 def load_texture(name, use_cache=True, id_only=True):
@@ -92,6 +92,7 @@ def load_texture(name, use_cache=True, id_only=True):
     else:
         return _loaded_texture[name]
 
+
 def bind_texture(raw_data, width, height, mode):
     texture_id = glGenTextures(1)
     glBindTexture(GL_TEXTURE_2D, texture_id)
@@ -119,4 +120,3 @@ def bind_texture(raw_data, width, height, mode):
                       GL_UNSIGNED_BYTE,
                       raw_data)
     return texture_id
-

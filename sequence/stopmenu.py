@@ -1,13 +1,12 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
 from program.box import BOX
+from program.const import *
 from program.utils import fill_screen, Snapshot
-from sequence.locals import MenuItems
 from sequence.keyconfig import KeyConfig
+from sequence.locals import MenuItems
 
 
 class StopMenu(object):

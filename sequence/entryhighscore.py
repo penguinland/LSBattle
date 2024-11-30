@@ -1,12 +1,11 @@
-#coding: utf8
 import time
 
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
 from program.box import BOX
+from program.const import *
 from sequence.locals import MenuItems
 from sequence.showhighscore import ShowHighScore
 

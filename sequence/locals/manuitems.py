@@ -1,5 +1,3 @@
-#coding: utf8
-# manuitems.py
 from OpenGL import GL
 
 from program.box import BOX

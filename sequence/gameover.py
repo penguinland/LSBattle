@@ -1,10 +1,9 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 
-from program.const import *
-from program.box import BOX
 from program import script
+from program.box import BOX
+from program.const import *
 from sequence.locals import MenuItems
 
 

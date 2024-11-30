@@ -1,7 +1,3 @@
-#coding: utf8
-#
-# keys.py
-#
 import sdl2
 
 from program.const import CONFIG_DIR

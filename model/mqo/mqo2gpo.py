@@ -1,4 +1,3 @@
-#coding: utf8
 import os
 
 from . import mqo_loader
@@ -31,6 +30,7 @@ class Material(object):
         s += " \"" + self.tex_name + "\""
         return s
 
+
 def output(name, points, objects):
     of = open(name+".gpo", "w")
     of.write("Game Polygon Object\n")
@@ -40,6 +40,7 @@ def output(name, points, objects):
         of.write(str(material) + "\n")
         of.write("i " + " ".join([str(i)for i in indices]) + "\n")
     of.close()
+
 
 def mqo2gpo(name):
     mqo = mqo_loader.MqoObject(open(name))

@@ -1,23 +1,22 @@
-#coding: utf8
 import sdl2
 
-from program.box import BOX
-from program.text import MyFont
-from sequence.locals import GameLevel, GameScore, backimage
-from sequence.title import Title
-from sequence.play import Play
-from sequence.travel import Travel
-from sequence.choicemode import ChoiceMode
-from sequence.howto import Howto
-from sequence.option import Option
-from sequence.loading import Loading
-from sequence.continequestion import ContineQuestion
-from sequence.showscore import ShowScore
-from sequence.entryhighscore import EntryHighScore
-from sequence.showhighscore import ShowHighScore
-from sequence.gameover import GameOver
 from entity import PlayerState
 from program import script
+from program.box import BOX
+from program.text import MyFont
+from sequence.choicemode import ChoiceMode
+from sequence.continequestion import ContineQuestion
+from sequence.entryhighscore import EntryHighScore
+from sequence.gameover import GameOver
+from sequence.howto import Howto
+from sequence.loading import Loading
+from sequence.locals import GameLevel, GameScore, backimage
+from sequence.option import Option
+from sequence.play import Play
+from sequence.showhighscore import ShowHighScore
+from sequence.showscore import ShowScore
+from sequence.title import Title
+from sequence.travel import Travel
 
 
 class Game(object):

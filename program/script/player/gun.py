@@ -1,4 +1,3 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num, func_str
 
 
@@ -8,6 +7,7 @@ class bullet(Block):
         self.size = 0.02
         self._color_func = color_func
         self._size_func = high_func_num(float, 0.001, 0.1)
+
 
 class model(Block):
     def __init__(self):
@@ -19,6 +19,7 @@ class model(Block):
         self._color_func = color_func
         self._size_func = high_func_num(float, 0.01, 10.0)
         self._rotation_speed_func = float
+
 
 class gun(Block):
     def __init__(self):

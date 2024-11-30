@@ -1,11 +1,11 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
 from program.box import BOX
+from program.const import *
 from sequence.locals import MenuItems, M
+
 
 class ShowScore(object):
     TITLE = 0

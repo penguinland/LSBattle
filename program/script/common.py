@@ -1,4 +1,3 @@
-#coding: utf8
 import re
 
 
@@ -37,6 +36,7 @@ def color_func(line):
         color += [1.0] * (4-n)
     return color
 
+
 s_float = float
 s_int   = lambda x:int(float(x))
 _func_hash = {}
@@ -62,6 +62,7 @@ def high_func_num(func, m, M, none=False):
     f.__name__ = "%s %s<=x<=%s"%(s, m, M)
     _func_hash[key] = f
     return f
+
 
 def func_str(line):
     line = line.strip()

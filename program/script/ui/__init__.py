@@ -1,4 +1,3 @@
-# coding: utf8
 from ..common import Block, color_func, high_func_num
 
 from .backimage import backimage

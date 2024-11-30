@@ -1,10 +1,8 @@
-# coding: utf8
-# entity/wireframe.py
 from OpenGL.GL import *
 
 from go import Vector3, Vector4D, Matrix44, Lorentz
-from program.utils import compile_program
 from program import script
+from program.utils import compile_program
 
 
 class WireFrame(object):

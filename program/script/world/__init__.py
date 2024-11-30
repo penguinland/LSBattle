@@ -1,8 +1,8 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num
 from .sky import sky
 from .wireframe import wireframe
 from .solar import solar
+
 
 class World(Block):
     def __init__(self):

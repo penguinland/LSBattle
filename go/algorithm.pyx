@@ -1,6 +1,4 @@
-# coding: utf8
 # cython: profile=False
-# go/algorithm.pyx
 cimport cython
 from libc.math cimport sqrt
 

@@ -1,4 +1,3 @@
-#coding: utf8
 from math import pi
 
 from ..common import Block, color_func, high_func_num, func_str
