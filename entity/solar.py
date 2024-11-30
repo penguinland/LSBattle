@@ -26,7 +26,7 @@ class Star(object):
     def __init__(self, X, star_data):
         func = _high_func(star_data.sphere_radius, star_data.tilt)
         self.radius = star_data.sphere_radius
-        self.radius2 = self.radius**2
+        self.radius2 = self.radius ** 2
         if star_data.texture is None:
             self.model = Polygon(IMG_DIR+star_data.model, func=func)
         else:
@@ -38,7 +38,7 @@ class Star(object):
         self.flame = Flame(S=flame_data.life*self.radius, v=flame_data.speed,
                            n=flame_data.num, m=flame_data.num*2,
                            color=flame_data.color,
-                           psize=flame_data.size*self.radius)
+                           psize=flame_data.size * self.radius)
         self.alive = True
         self.X_dead = None
 
