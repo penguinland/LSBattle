@@ -48,20 +48,21 @@ class Star(object):
         self.X_dead = None
 
     def draw(self, Xp, L, LL):
-        if self.hp > 0:
-            dX = self.X - Xp
-            dX.t = -dX.length()
-            dx = L.get_transform(dX)
-            r = -dx.t
-            if r > 0.5*BOX.far_clip:
-                s = 0.05 * BOX.far_clip / r
-                X = Xp + dX*s
-                self.model.draw(Xp, L, LL, X=X, R=Matrix44.scale(s))
-            else:
-                self.model.draw(Xp, L, LL, X=self.X)
-        else:
+        if self.hp <= 0:
             if not self.flame.draw(self.X_dead, Xp, L):
                 self.alive = False
+            return
+
+        dX = self.X - Xp
+        dX.t = -dX.length()
+        dx = L.get_transform(dX)
+        r = -dx.t
+        if r > 0.5 * BOX.far_clip:
+            s = 0.05 * BOX.far_clip / r
+            X = Xp + dX*s
+            self.model.draw(Xp, L, LL, X=X, R=Matrix44.scale(s))
+        else:
+            self.model.draw(Xp, L, LL, X=self.X)
 
     def hit_check(self, Xp, world):
         if self.hp <= 0:
