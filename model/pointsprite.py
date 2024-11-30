@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-# pointsplite.py
 from OpenGL.GL import *
 
 from program.utils import compile_program, load_texture, DY_TEXTURE_KYU
@@ -34,7 +32,6 @@ void main() {
 """
 
 class PointSprite(object):
-
     def __init__(self, vertices=None, size=None, color=None, size_w=True, texture=DY_TEXTURE_KYU):
         if vertices is not None:
             n = len(vertices)
