@@ -12,6 +12,10 @@ from program.text import drawSentence3d
 
 
 def _high_func(sphere_radius, tilt):
+    """
+    Returns a function that scales and rotates points by the given radius and
+    tilt.
+    """
     mat = Matrix44.scale(sphere_radius) * Matrix44.z_rotation(tilt*pi/180) * Matrix44.y_rotation(pi/2)
     def func(x, y, z):
         return mat.get_rotate([x, y, z])
