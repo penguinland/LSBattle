@@ -96,10 +96,10 @@ def high_func_num(func, min_value, max_value, can_be_none=False):
     return f
 
 
-def func_str(line):
+def parse_string(line):
     """
     If the provided line is "None", we return None, and otherwise we return the
-    line itself.
+    line itself with whitespace stripped off the edges.
     """
     line = line.strip()
     if line == "None":

@@ -1,4 +1,4 @@
-from ..common import Block, color_func, high_func_num, func_str
+from ..common import Block, color_func, high_func_num, parse_string
 
 
 _modes = ["FILL",
@@ -22,7 +22,7 @@ class backimage(Block):
         self.image_fill_mode = _modes[0]
         self.alpha = 0.5
         self._color_func = color_func
-        self._image_func = func_str
+        self._image_func = parse_string
         self._image_color_func = color_func
         self._image_fill_mode_func = _image_fill_mode_func
         self._alpha_func = high_func_num(float, 0.0, 1.0)

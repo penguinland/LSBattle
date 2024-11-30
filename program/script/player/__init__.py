@@ -1,4 +1,4 @@
-from ..common import Block, color_func, high_func_num, func_str
+from ..common import Block, color_func, high_func_num, parse_string
 
 from .gun import gun
 from .hpbar import hpbar

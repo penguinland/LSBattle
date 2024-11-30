@@ -1,4 +1,4 @@
-from ..common import Block, color_func, high_func_num, func_str
+from ..common import Block, color_func, high_func_num, parse_string
 
 
 class window(Block):
@@ -13,5 +13,5 @@ class window(Block):
         self._color_func = color_func
         self._pre_size_func = high_func_num(float, 1e-4, 0.2)
         self._pre_color_func = color_func
-        self._texture_func = func_str
+        self._texture_func = parse_string
         self._texture_dynamic_num_func = int

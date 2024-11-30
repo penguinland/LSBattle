@@ -1,4 +1,4 @@
-from ..common import Block, high_func_num, func_str, color_func
+from ..common import Block, high_func_num, parse_string, color_func
 
 
 _default = [
@@ -21,15 +21,15 @@ class star(Block):
         self.hp = 1000
         self.primary_star = "sun"
 
-        self._name_func = func_str
-        self._texture_func = func_str
-        self._model_func = func_str
+        self._name_func = parse_string
+        self._texture_func = parse_string
+        self._model_func = parse_string
         self._sphere_radius_func = high_func_num(float, 0.0, 10.**50)
         self._orbital_radius_func = high_func_num(float, 0.0, 10.**50)
         self._orbital_phi_func = high_func_num(float, -180, 180)
         self._tilt_func = high_func_num(float, -180, 180)
         self._hp_func = high_func_num(int, 1, 10**10)
-        self._primary_star_func = func_str
+        self._primary_star_func = parse_string
 
 
 class flame(Block):
@@ -55,7 +55,7 @@ class solar(Block):
         self.dx =  0.0
         self.dy = -0.5
         self.dz = -3.0
-        self._center_func = func_str
+        self._center_func = parse_string
         self._dx_func = float
         self._dy_func = float
         self._dz_func = float
