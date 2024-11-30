@@ -1,5 +1,3 @@
-# coding: utf8
-# entity/player.py
 from math import pi
 
 from OpenGL.GL import *
