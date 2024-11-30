@@ -64,14 +64,16 @@ class Star(object):
                 self.alive = False
 
     def hit_check(self, Xp, world):
-        if self.hp > 0:
-            t = Xp.t - Xp.distance_to(self.X)
-            self.X.t = t
-            X1 = self.X + Vector4D(0.02, 0, 0, 0)
-            self.hp -= world.player.bullet_hit_check(X1, self.X, self.radius2)
-            self.hp -= world.enemies.bullets.hit_check(X1, self.X, self.radius2)
-            if self.hp <= 0:
-                self.X_dead = self.X.copy()
+        if self.hp <= 0:
+            return
+
+        t = Xp.t - Xp.distance_to(self.X)
+        self.X.t = t
+        X1 = self.X + Vector4D(0.02, 0, 0, 0)
+        self.hp -= world.player.bullet_hit_check(X1, self.X, self.radius2)
+        self.hp -= world.enemies.bullets.hit_check(X1, self.X, self.radius2)
+        if self.hp <= 0:
+            self.X_dead = self.X.copy()
 
 
 class SolarSystem(object):
