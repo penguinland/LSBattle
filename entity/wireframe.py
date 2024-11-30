@@ -94,10 +94,13 @@ class WireFrame(object):
         else:
             r, g, b, a = color
         glColor(r, g, b, min(a, 10 * a / L.get_gamma()))
+
         xp, yp, zp = Xp.get_lis3()
+        # Truncate to the nearest lattice segment
         xo = int(xp/self.lattice_unit) * self.lattice_unit
         yo = int(yp/self.lattice_unit) * self.lattice_unit
         zo = int(zp/self.lattice_unit) * self.lattice_unit
+
         glUniform3fv(self.Xp_local, 1, [xp, yp, zp])
         glUniform3fv(self.Xo_local, 1, [xo, yo, zo])
         glUniformMatrix4fv(self.mat_local, 1, GL_FALSE, L.to_glsl())
