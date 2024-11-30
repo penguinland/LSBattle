@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-# lines.py
 import os
 
 from OpenGL.GL import *
