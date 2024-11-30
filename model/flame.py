@@ -55,7 +55,8 @@ class Flame(object):
             NN = self.vertices
         else:
             NN = [LL.get_transform(N) for N in self.vertices]
-        vc = 0
+
+        vc = 0  # Count of non-positive s 
         for N, S, size in zip(NN, self.SS, self.sizes):
             b = N.inner_product(dX)
             s = b - sqrt(b*b - ac)
@@ -66,7 +67,8 @@ class Flame(object):
                     sizes.append(size)
             else:
                 vc += 1
+
         if vertices:
             self.model.draw(Xp, L, vertices, U, sizes, color=color)
             return True
-        return (vc == 0)
+        return (vc == 0)  # whether any s was non-positive

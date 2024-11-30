@@ -2,7 +2,7 @@ from math import sqrt, sin, cos, pi
 
 from go import Vector3, Vector4D, Lorentz
 from go import hit_check
-from model.pointsprite import PointSprite, PointSpriteDoppler
+from model.pointsprite import PointSpriteDoppler
 from model.flame import Flame
 from program.box import BOX
 from program.utils import DY_TEXTURE_KYU
