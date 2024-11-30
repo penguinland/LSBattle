@@ -354,11 +354,14 @@ class Player(object):
                 vertices_p.extend(X_PLC.get_lis3())
                 X_FLC = enemy.worldline.get_X_FP(self.P.X, 1.0)
                 vertices_f.extend(X_FLC.get_lis3())
-        if vertices_p:
-            self.on_position.draw(self.P.X, L, vertices_p)
-            self.on_position.draw(self.P.X, L, vertices_f,
-                                  size=BOX.Y*script.player.window.pre_size,
-                                  color=script.player.window.pre_color)
-            glLineWidth(5)
-            self.lines.draw(self.P.X, L, vertices_p, vertices_f)
-            glLineWidth(1)
+
+        if not vertices_p:
+            return  # Nothing to draw
+
+        self.on_position.draw(self.P.X, L, vertices_p)
+        self.on_position.draw(self.P.X, L, vertices_f,
+                              size=BOX.Y*script.player.window.pre_size,
+                              color=script.player.window.pre_color)
+        glLineWidth(5)
+        self.lines.draw(self.P.X, L, vertices_p, vertices_f)
+        glLineWidth(1)
