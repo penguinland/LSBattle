@@ -27,16 +27,19 @@ class Star(object):
         func = _high_func(star_data.sphere_radius, star_data.tilt)
         self.radius = star_data.sphere_radius
         self.radius2 = self.radius ** 2
+        model_location = IMG_DIR + star_data.model
         if star_data.texture is None:
-            self.model = Polygon(IMG_DIR+star_data.model, func=func)
+            self.model = Polygon(model_location, func=func)
         else:
-            self.model = Polygon(IMG_DIR+star_data.model, func=func, texture=False)
+            self.model = Polygon(model_location, func=func, texture=False)
             self.model.set_texture(star_data.texture)
         self.X = X.copy()
         self.hp = star_data.hp
         flame_data = script.world.solar.flame
-        self.flame = Flame(S=flame_data.life*self.radius, v=flame_data.speed,
-                           n=flame_data.num, m=flame_data.num*2,
+        self.flame = Flame(S=flame_data.life * self.radius,
+                           v=flame_data.speed,
+                           n=flame_data.num,
+                           m=flame_data.num * 2,
                            color=flame_data.color,
                            psize=flame_data.size * self.radius)
         self.alive = True
