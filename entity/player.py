@@ -2,16 +2,16 @@ from math import pi
 
 from OpenGL.GL import *
 
+from entity import Bullets
 from go import Vector3, Vector4D, Matrix44, Lorentz, Quaternion
 from go import PhaseSpace, WorldLine
 from go import calc_repulsion
-from entity import Bullets
-from model.pointsprite import PointSprite
 from model.lines import Lines
+from model.pointsprite import PointSprite
+from program import script
 from program.box import BOX
 from program.utils import FlatScreen, fill_screen, DY_TEXTURE_EDGE
 from program.text import drawSentence
-from program import script
 
 
 class PlayerState(object):
