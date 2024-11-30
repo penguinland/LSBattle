@@ -54,19 +54,19 @@ def color_func(line):
 # TODO: use a more standard caching decorator instead of _func_hash
 _func_hash = {}  # Memoize the results
 re_type = re.compile(r"<type (['\"])(\w+)\1>")
-def high_func_num(func, m, M, none=False):
-    key = (id(func), m, M, none)
+def high_func_num(func, min_value, max_value, can_be_none=False):
+    key = (id(func), min_value, max_value, can_be_none)
     if key in _func_hash:
         return _func_hash[key]
 
     def f(line):
-        if none and line == "None":
+        if can_be_none and line == "None":
             return None
         value = func(line)
-        if value < m:
-            return m
-        elif value > M:
-            return M
+        if value < min_value:
+            return min_value
+        elif value > max_value:
+            return max_value
         else:
             return value
 
@@ -74,7 +74,7 @@ def high_func_num(func, m, M, none=False):
     match = re_type.match(s)
     if match:
         s = match.group(2)
-    f.__name__ = "%s %s<=x<=%s"%(s, m, M)
+    f.__name__ = "%s %s<=x<=%s"%(s, min_value, max_value)
     _func_hash[key] = f
     return f
 
