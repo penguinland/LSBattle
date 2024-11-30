@@ -1,3 +1,6 @@
+"""
+This file focuses on drawing the background of the universe
+"""
 from math import pi, tan
 
 from OpenGL.GL import *
@@ -14,15 +17,15 @@ class Sky(object):
     def __init__(self):
         self.init_vertex()
         self.init_program()
-        self.m = Matrix44.x_rotation(script.world.sky.rotation1*pi/180)
-        self.m = self.m * Matrix44.y_rotation(script.world.sky.rotation0*pi/180)
+        self.m = (Matrix44.x_rotation(script.world.sky.rotation1 * pi / 180) *
+                  Matrix44.y_rotation(script.world.sky.rotation0 * pi / 180))
         texture_name0 = search_imagefile(script.world.sky.texture0)
         self.texture_id0 = load_texture(texture_name0)
         # texture_name1 = search_imagefile(script.world.sky.texture1)
         # self.texture_id1 = load_texture(texture_name1)
 
     def init_vertex(self):
-        angle = VIEW_ANGLE*pi/180
+        angle = VIEW_ANGLE * pi / 180
         z = -1.0
         x = tan(angle) * abs(z)
         y = x * BOX.Y / BOX.X
@@ -30,7 +33,7 @@ class Sky(object):
                   -x,  y, z,
                   -x, -y, z,
                    x, -y, z]
-        self.n = len(vertex)//3
+        self.n = len(vertex) // 3
         self.vertex = (GLfloat*len(vertex))(*vertex)
 
     def init_program(self):
