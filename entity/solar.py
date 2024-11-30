@@ -80,16 +80,17 @@ class Star(object):
 
 class SolarSystem(object):
     star_datum = None
+
     def __init__(self, world, Xp, scale):
         self.world = world
         self.stars = {}
         self.read_data()
         if not self.star_datum:
             return
+
         self.calc_star_pos(Xp, scale)
-        for name in self.star_pos:
-            star = Star(self.star_pos[name], self.star_datum[name])
-            self.stars[name] = star
+        self.stars = {name: Star(self.star_pos[name], self.star_datum[name])
+                      for name in self.star_pos}
 
     @classmethod
     def read_data(cls):
