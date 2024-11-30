@@ -6,6 +6,9 @@ from program.utils import compile_program
 
 
 class Lines(object):
+    """
+    This is only used in entity/player.py, to draw windows(?) around each enemy.
+    """
     def __init__(self, color):
         self.color = color
         self.load_program()
