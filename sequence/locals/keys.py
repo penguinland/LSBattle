@@ -74,11 +74,11 @@ class Keys(object):
 
     def load_config(self):
         try:
-            f = open(self.config_fname)
-            for line in f:
-                name, value = line.split("=")
-                if hasattr(self, name):
-                    setattr(self, name, int(value))
+            with open(self.config_fname) as f:
+                for line in f:
+                    name, value = line.split("=")
+                    if hasattr(self, name):
+                        setattr(self, name, int(value))
         except IOError:
             self.save()
             return
@@ -86,17 +86,16 @@ class Keys(object):
     def load_map(self):
         self.key_map = {}
         try:
-            f = open(self.keymap_fname)
-            for line in f:
-                name, value = line.split("=")
-                self.key_map[int(value)] = name
+            with open(self.keymap_fname) as f:
+                for line in f:
+                    name, value = line.split("=")
+                    self.key_map[int(value)] = name
         except IOError:
             for key in dir(sdl2):
                 if key.startswith("SDLK_"):
                     self.key_map[getattr(sdl2, key)] = key[5:].upper()
 
     def save(self):
-        f = open(self.config_fname, "w")
-        for name in self.names:
-            f.write("%s=%i\n"%(name, getattr(self, name)))
-        f.close()
+        with open(self.config_fname, "w") as f:
+            for name in self.names:
+                f.write("%s=%i\n"%(name, getattr(self, name)))
