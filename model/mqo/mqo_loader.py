@@ -278,12 +278,7 @@ class MqoObject(object):
         self.obj.normalize()
 
         def key(face):
-            if face.uv is None:
-                s = 1000000
-            else:
-                s = 0
-            s += face.material
-            return s
+            return face.material + (1000000 if face.uv is None else 0)
         self.obj.faces.sort(key=key)
 
     ###### read tool ######
