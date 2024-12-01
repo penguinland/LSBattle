@@ -29,9 +29,11 @@ class GameOver(object):
                         return
                     elif key in KS_RETURN:
                         return
+
             t = sdl2.SDL_GetTicks()
-            if t - start > 2000:
+            if t - start > 2000:  # Two seconds have elapsed: move on.
                 return
+
             GL.glClear(GL.GL_DEPTH_BUFFER_BIT|GL.GL_COLOR_BUFFER_BIT)
             self.menu.draw()
             sdl2.SDL_GL_SwapWindow(BOX.window)
