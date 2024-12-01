@@ -4,8 +4,9 @@ from program.const import CONFIG_DIR
 
 
 class Keys(object):
-    config_fname = CONFIG_DIR+"keyconfig.ini"
-    keymap_fname = CONFIG_DIR+"keymap.dat"
+    config_fname = CONFIG_DIR + "keyconfig.ini"
+    keymap_fname = CONFIG_DIR + "keymap.dat"
+
     def __init__(self):
         self.reset()
         self.default()
@@ -76,7 +77,7 @@ class Keys(object):
                       "     Down     ",
                       "Shoot         ",
                       "Booster       ",
-                      "brake         ",
+                      "Brake         ",
                       "Change Gun    ",
                       "HUD ON/OFF    "]
 
@@ -112,5 +113,3 @@ class Keys(object):
         for name in self.names:
             f.write("%s=%i\n"%(name, getattr(self, name)))
         f.close()
-
-
