@@ -120,21 +120,23 @@ class Obj(object):
         return self
 
     def expand_mirror(self):
-        if self.mirror not in [None, 0] and self.mirror_axis is not None:
-            x = y = z = 1.0
-            if self.mirror_axis&1: x = -1.0
-            if self.mirror_axis&2: y = -1.0
-            if self.mirror_axis&4: z = -1.0
-            xi = [x, y, z]
-            fs = []
-            for f in self.faces:
-                ff, c = f.mirror_copy(self.vertex, xi)
-                if c and ff in self.faces:
-                    self.vertex = self.vertex[:-c]
-                else:
-                    fs.append(ff)
-            self.faces.extend(fs)
-            self.mirror = None
+        if self.mirror in [None, 0] or self.mirror_axis is None:
+            return
+
+        x = y = z = 1.0
+        if self.mirror_axis&1: x = -1.0
+        if self.mirror_axis&2: y = -1.0
+        if self.mirror_axis&4: z = -1.0
+        xi = [x, y, z]
+        fs = []
+        for f in self.faces:
+            ff, c = f.mirror_copy(self.vertex, xi)
+            if c and ff in self.faces:
+                self.vertex = self.vertex[:-c]
+            else:
+                fs.append(ff)
+        self.faces.extend(fs)
+        self.mirror = None
 
     def check_material_uv(self, materials, mmap):
         for face in self.faces:
