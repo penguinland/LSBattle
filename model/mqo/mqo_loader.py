@@ -142,6 +142,13 @@ class Obj(object):
         return self
 
     def expand_mirror(self):
+        """
+        For each face in the object, also include the face reflected across the
+        mirror, then remove the ability to mirror any more.
+
+        TODO: self.mirror appears to be unused. Can we use only mirror_axis
+        instead?
+        """
         if self.mirror in [None, 0] or self.mirror_axis is None:
             return
 
