@@ -7,8 +7,20 @@ class Face(object):
     __slots__ = ("n", "indices", "material", "uv", "h")
 
     def __init__(self, n=0, indices=None, material=None, uv=None, color=None):
+        """
+        Inputs:
+        - n, the number of vertices in this face. Must be 3 or 4.
+        - indices, the list of indices into some external list of vertices to
+          describe the face. Must have length n.
+        - material is a mystery integer
+        - uv is a string depicting a space-separated list of floats, which is
+          unused if material is unused.
+        - color is entirely unused!
+        """
         self.n = int(n)
-        if self.n not in [3, 4]:
+        # According to the MQO 1.0 spec, a face must consist of either 3 or 4
+        # vertices.
+        if self.n not in (3, 4):
             self.n = 0
             return
 
@@ -44,6 +56,14 @@ class Face(object):
         return self.h == other.h and self.indices == other.indices
 
     def mirror_copy(self, vertex, xi):
+        """
+        vertex is a list of vertices.
+        xi is a list of 3 numbers, each of which is either 1 or -1, indicating
+        whether to mirror along the x, y, and/or z axes.
+
+        We return a new face formed by mirroring self along the axes indicated
+        by xi, as well as the number of new vertices we appended to the list.
+        """
         face = Face()
         face.n = self.n
         face.material = self.material
@@ -53,7 +73,14 @@ class Face(object):
             face.uv[3], face.uv[-1] = face.uv[-1], face.uv[3]
         else:
             face.uv = None
+
+        # For each vertex in the face, in reverse order, reflect it via xi and
+        # store that new vertex in the new face.
         it = list(range(self.n))
+        # Regardless of whether the face has 3 or 4 vertices, if you swap the
+        # second one with the last one, we reverse the order of the vertices.
+        # ABC -> ACB, and
+        # ABCD -> ADCB (equivalent to DCBA)
         it[1], it[-1] = it[-1], it[1]
         face.indices = []
         c = 0
