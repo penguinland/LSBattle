@@ -19,11 +19,8 @@ if os.name == "nt":
         ]
 
 for pyxname in iglob("go/*.pyx"):
-    name, ext = os.path.splitext(pyxname)
-    name = name.replace(os.sep, ".")
+    name, _ = os.path.splitext(pyxname)
+    name = name.replace(os.sep, ".")  # Replace all slashes with dots
+    cmdclass = {"build_ext": build_ext}
     ext_modules = [Extension(name, [pyxname], **option)]
-    setup(
-        name = name,
-        cmdclass = {'build_ext': build_ext},
-        ext_modules = ext_modules
-    )
+    setup(name=name, cmdclass=cmdclass, ext_modules=ext_modules)
