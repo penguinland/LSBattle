@@ -52,14 +52,14 @@ class Face(object):
     def __eq__(self, other):
         return self.h == other.h and self.indices == other.indices
 
-    def create_mirror(self, vertex, xi):
+    def create_mirror(self, vertices, xi):
         """
-        vertex is a list of vertices.
+        vertices is a list of vertices, which correspond to self.indices.
         xi is a list of 3 numbers, each of which is either 1 or -1, indicating
         whether to mirror along the x, y, and/or z axes.
 
         We return a new face formed by mirroring self along the axes indicated
-        by xi, after appending any new vertices needed to vertex.
+        by xi, after appending any new vertices needed.
         """
         face = Face()
         face.n = self.n
@@ -82,12 +82,12 @@ class Face(object):
         face.indices = []
         c = 0
         for i in it:
-            v = list(map(operator.mul, xi, vertex[self.indices[i]]))
+            v = list(map(operator.mul, xi, vertices[self.indices[i]]))
             try:
-                index = vertex.index(v)
+                index = vertices.index(v)
             except ValueError:
-                index = len(vertex)
-                vertex.append(v)
+                index = len(vertices)
+                vertices.append(v)
                 c += 1
             face.indices.append(index)
         face.make_hash()
@@ -110,7 +110,7 @@ class Material(object):
 
 class Obj(object):
     def __init__(self):
-        self.vertex = []
+        self.vertices = []
         self.faces  = []
         self.mirror = None
         self.mirror_axis = None
@@ -123,18 +123,19 @@ class Obj(object):
         faces! It's possible that the other Obj we're appending will contain
         invalid state after this function returns.
         """
-        # vmap is a map from indices in other.vertex to indices in self.vertex.
+        # vmap is a map from indices in other.vertices to indices in
+        # self.vertices.
         # We create it when appending vertices from other to self, and then use
         # it when appending faces from other to self.
-        vmap = [0] * len(other.vertex)
-        n = len(self.vertex)  # Index of the next vertex to add to self.vertex
-        for i, v in enumerate(other.vertex):
+        vmap = [0] * len(other.vertices)
+        n = len(self.vertices)  # Index of the next vertex to add
+        for i, v in enumerate(other.vertices):
             try:
-                vmap[i] = self.vertex.index(v)
+                vmap[i] = self.vertices.index(v)
             except ValueError:
                 vmap[i] = n
                 n += 1
-                self.vertex.append(v)
+                self.vertices.append(v)
 
         for face in other.faces:
             face.indices = [vmap[i] for i in face.indices]
@@ -159,7 +160,8 @@ class Obj(object):
         if self.mirror_axis & 2: y = -1.0
         if self.mirror_axis & 4: z = -1.0
         xi = [x, y, z]
-        mirrored_faces = [f.create_mirror(self.vertex, xi) for f in self.faces]
+        mirrored_faces = [f.create_mirror(self.vertices, xi)
+                          for f in self.faces]
         self.faces.extend(mirrored_faces)
         self.mirror = None
 
@@ -215,13 +217,13 @@ class Obj(object):
         range of y values is -0.5 to +0.5, and x and z are scaled
         proportionately.
         """
-        ys = [y for _, y, _ in self.vertex]
+        ys = [y for _, y, _ in self.vertices]
         max_y = max(ys)
         min_y = min(ys)
         ly = max_y - min_y
         factor = length / ly
-        self.vertex = [[x * factor, (y - min_y) * factor + dy, z * factor]
-                        for x, y, z in self.vertex]
+        self.vertices = [[x * factor, (y - min_y) * factor + dy, z * factor]
+                         for x, y, z in self.vertices]
 
 
 class MqoObject(object):
@@ -333,7 +335,7 @@ class MqoObject(object):
 
     def object_chunk(self):
         obj = Obj()
-        vertex = []
+        vertices = []
         while True:
             line = next(self.imqo).strip()
             if line == "}":break
@@ -341,7 +343,7 @@ class MqoObject(object):
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertex = self.vertex_chunk()
+                    vertices = self.vertex_chunk()
                 elif chunk == "face":
                     obj.faces = self.face_chunk()
                 else:
@@ -368,26 +370,26 @@ class MqoObject(object):
                     if obj.translation != [.0,.0,.0]:
                         print("t",obj.translation)
 
-        vmap = [0]*len(vertex)
-        for i, v in enumerate(vertex):
+        vmap = [0]*len(vertices)
+        for i, v in enumerate(vertices):
             try:
-                vmap[i] = obj.vertex.index(v)
+                vmap[i] = obj.vertices.index(v)
             except ValueError:
-                vmap[i] = len(obj.vertex)
-                obj.vertex.append(v)
+                vmap[i] = len(obj.vertices)
+                obj.vertices.append(v)
         for face in obj.faces:
             face.indices = [vmap[i] for i in face.indices]
 
         return obj
 
     def vertex_chunk(self):
-        vertex = []
+        vertices = []
         while True:
             line = next(self.imqo).strip()
             if line == "}":break
             v = list(map(float, line.split()))
-            vertex.append(v)
-        return vertex
+            vertices.append(v)
+        return vertices
 
     def face_chunk(self):
         faces = []
