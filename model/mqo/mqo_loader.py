@@ -162,6 +162,17 @@ class Obj(object):
         self.mirror = None
 
     def check_material_uv(self, materials, mmap):
+        def get_color_index(color):
+            # If the color is not in an index yet, insert it and then return
+            # that new index.
+            m = Material()
+            m.color = color
+            try:
+                return materials.index(m)
+            except ValueError:
+                materials.append(m)
+                return len(materials) - 1
+
         for face in self.faces:
             if face.material >= 0:
                 mi = mmap[face.material]
@@ -173,24 +184,12 @@ class Obj(object):
                 elif face.uv is None:
                     # The material has a texture but the faces have no UV
                     # coordinates -> assign a new material with only color
-                    m = Material()
-                    m.color = materials[mi].color
-                    try:
-                        face.material = materials.index(m)
-                    except ValueError:
-                        face.material = len(materials)
-                        materials.append(m)
+                    face.material = get_color_index(materials[mi].color)
             else:
-                # If there is no material, create a new material with the
-                # object's color.
+                # This face has no material yet. Create a new one with the right
+                # color.
                 face.uv = None
-                m = Material()
-                m.color = self.color
-                try:
-                    face.material = materials.index(m)
-                except ValueError:
-                    face.material = len(materials)
-                    materials.append(m)
+                face.material = get_color_index(self.color)
 
     def normalize(self, length=1.0, dy=-0.5):
         max_y = 0.0
