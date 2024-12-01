@@ -85,15 +85,14 @@ class Material(object):
 
 
 class Obj(object):
-
     def __init__(self):
         self.vertex = []
         self.faces  = []
         self.mirror = None
         self.mirror_axis = None
 
-    def __iadd__(self, other):
-        vmap = [0]*len(other.vertex)
+    def __iadd__(self, other):  # Override the `+=` operator
+        vmap = [0] * len(other.vertex)
         n = len(self.vertex)
         vs = []
         for i, v in enumerate(other.vertex):
