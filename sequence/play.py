@@ -18,6 +18,7 @@ class Play(object):
     WIN  = 0
     LOSE = 1
     ELSE = 2
+
     def __init__(self, level, scale, playerstate=None, total_score=0, item=None):
         BOX.resize(scale)
         self.stopmenu = StopMenu()
