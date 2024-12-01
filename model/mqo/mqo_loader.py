@@ -40,8 +40,8 @@ class Face(object):
     def make_hash(self):
         self.h = hash(tuple(self.indices))
 
-    def __eq__(self, othr):
-        return self.h == othr.h and self.indices == othr.indices
+    def __eq__(self, other):
+        return self.h == other.h and self.indices == other.indices
 
     def mirror_copy(self, vertex, xi):
         face = Face()
@@ -72,12 +72,13 @@ class Face(object):
 
 class Material(object):
     __slots__ = ("color", "tex_name")
+
     def __init__(self):
         self.color = None
         self.tex_name = ""
 
-    def __eq__(self, othr):
-        return self.color == othr.color and self.tex_name == othr.tex_name
+    def __eq__(self, other):
+        return self.color == other.color and self.tex_name == other.tex_name
 
 
 class Obj(object):
@@ -88,11 +89,11 @@ class Obj(object):
         self.mirror = None
         self.mirror_axis = None
 
-    def __iadd__(self, othr):
-        vmap = [0]*len(othr.vertex)
+    def __iadd__(self, other):
+        vmap = [0]*len(other.vertex)
         n = len(self.vertex)
         vs = []
-        for i, v in enumerate(othr.vertex):
+        for i, v in enumerate(other.vertex):
             try:
                 vmap[i] = self.vertex.index(v)
             except ValueError:
@@ -102,7 +103,7 @@ class Obj(object):
         self.vertex.extend(vs)
 
         fs = []
-        for face in othr.faces:
+        for face in other.faces:
             face.indices = [vmap[i] for i in face.indices]
             face.make_hash()
             if face not in self.faces:
