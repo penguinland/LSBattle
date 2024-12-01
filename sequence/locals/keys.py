@@ -1,3 +1,8 @@
+"""
+The Keys class keeps track of which keys do what, and which ones are currently
+pressed down. Lots of public mutable state and introspection in here; should be
+rearchitected when better understood!
+"""
 import sdl2
 
 from program.const import CONFIG_DIR
