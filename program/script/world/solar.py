@@ -9,6 +9,9 @@ _default = [
 ]
 
 
+# WARNING: there is some kind of magic going on in these names: if you rename
+# the class and rename every mention of `star` in the repo, things break
+# somehow!? Figure it out later.
 class star(Block):
     def __init__(self):
         self.name = "earth"
