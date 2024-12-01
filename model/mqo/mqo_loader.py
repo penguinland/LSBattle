@@ -57,7 +57,7 @@ class Face(object):
         whether to mirror along the x, y, and/or z axes.
 
         We return a new face formed by mirroring self along the axes indicated
-        by xi, as well as the number of new vertices we appended to the list.
+        by xi, after appending any new vertices needed to vertex.
         """
         face = Face()
         face.n = self.n
@@ -89,7 +89,7 @@ class Face(object):
                 c += 1
             face.indices.append(index)
         face.make_hash()
-        return face, c
+        return face
 
 
 class Material(object):
@@ -150,11 +150,8 @@ class Obj(object):
         if self.mirror_axis & 2: y = -1.0
         if self.mirror_axis & 4: z = -1.0
         xi = [x, y, z]
-        fs = []
-        for f in self.faces:
-            ff, c = f.create_mirror(self.vertex, xi)
-            fs.append(ff)
-        self.faces.extend(fs)
+        mirrored_faces = [f.create_mirror(self.vertex, xi) for f in self.faces]
+        self.faces.extend(mirrored_faces)
         self.mirror = None
 
     def check_material_uv(self, materials, mmap):
