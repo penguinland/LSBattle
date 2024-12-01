@@ -229,6 +229,13 @@ class Obj(object):
 class MqoObject(object):
     re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
     re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
+    # TODO: this regex can't possibly be right.
+    # Comments:
+    # 1 Number of vertices
+    # 2 Vertex index
+    # 3 Material index
+    # 4 UV value
+    # 5 Vertex color
     re_face   = re.compile(r"""
                            ^(\w+)\s*              #1 頂点数
                            V\(([^)]*)\)\s*        #2 頂点インデックス
