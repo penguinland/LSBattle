@@ -71,6 +71,9 @@ class Face(object):
 
 
 class Material(object):
+    """
+    This is a glorified mutable tuple of (color, texture_name)
+    """
     __slots__ = ("color", "tex_name")
 
     def __init__(self):
