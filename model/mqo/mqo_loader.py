@@ -210,15 +210,15 @@ class Obj(object):
     def normalize(self, length=1.0, dy=-0.5):
         max_y = 0.0
         min_y = 0.0
-        for x,y,z in self.vertex:
+        for _, y, _ in self.vertex:
             if y > max_y:
                 max_y = y
             if y < min_y:
                 min_y = y
         ly = max_y - min_y
-        fact = length / ly
-        self.vertex = [[x*fact, (y-min_y)*fact+dy, z*fact]
-                        for x,y,z in self.vertex]
+        factor = length / ly
+        self.vertex = [[x * factor, (y - min_y) * factor + dy, z * factor]
+                        for x, y, z in self.vertex]
 
 
 class MqoObject(object):
