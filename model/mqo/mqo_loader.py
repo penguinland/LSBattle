@@ -97,23 +97,19 @@ class Obj(object):
         # it when appending faces from other to self.
         vmap = [0] * len(other.vertex)
         n = len(self.vertex)  # Index of the next vertex to add to self.vertex
-        vs = []  # List of new vertices to add
         for i, v in enumerate(other.vertex):
             try:
                 vmap[i] = self.vertex.index(v)
             except ValueError:
                 vmap[i] = n
                 n += 1
-                vs.append(v)
-        self.vertex.extend(vs)
+                self.vertex.append(v)
 
-        fs = []
         for face in other.faces:
             face.indices = [vmap[i] for i in face.indices]
             face.make_hash()
             if face not in self.faces:
-                fs.append(face)
-        self.faces.extend(fs)
+                self.faces.append(face)
         return self
 
     def expand_mirror(self):
