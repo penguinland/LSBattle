@@ -3,40 +3,64 @@ import re
 
 
 class Face(object):
+    # __slots__ contains a list of all fields within the class
     __slots__ = ("n", "indices", "material", "uv", "h")
 
     def __init__(self, n=0, indices=None, material=None, uv=None, color=None):
+        """
+        Inputs:
+        - n, the number of vertices in this face. Must be 3 or 4.
+        - indices, the list of indices into some external list of vertices to
+          describe the face. Must have length n.
+        - material is an index into some external list of materials
+        - uv is a string depicting a space-separated list of floats, which has
+          something to do with the texture of the material (if the material has
+          a texture and isn't just a flat color)
+        - color is entirely unused!? but we keep it because it's part of the MQO
+          standard and we're parsing raw MQO data into here.
+        """
         self.n = int(n)
-        if self.n not in [3, 4]:
+        # According to the MQO 1.0 spec, a face must consist of either 3 or 4
+        # vertices.
+        if self.n not in (3, 4):
             self.n = 0
             return
+
         self.indices = [int(i) for i in indices.split()]
         if len(self.indices) != self.n:
             raise IOError("Face format is clashed")
-        self.indices[1], self.indices[-1] = self.indices[-1], self.indices[1]
+
         if material is None:
             self.material = -1
         else:
             self.material = int(material)
+
         if uv is None or self.material == -1:
             self.uv = None
         else:
             self.uv = [float(i) for i in uv.split()]
-            if len(self.uv) != self.n*2:
+            if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
-            self.uv[2], self.uv[-2] = self.uv[-2], self.uv[2]
-            self.uv[3], self.uv[-1] = self.uv[-1], self.uv[3]
-            for i in range(1, self.n*2, 2):
+            for i in range(1, self.n * 2, 2):
                 self.uv[i] = 1.0 - self.uv[i]
+
         self.make_hash()
 
     def make_hash(self):
         self.h = hash(tuple(self.indices))
 
-    def __eq__(self, othr):
-        return self.h == othr.h and self.indices == othr.indices
+    def __eq__(self, other):
+        return self.h == other.h and self.indices == other.indices
 
-    def mirror_copy(self, vertex, xi):
+    def create_mirror(self, vertex, xi):
+        """
+        vertex is a list of vertices.
+        xi is a list of 3 numbers, each of which is either 1 or -1, indicating
+        whether to mirror along the x, y, and/or z axes.
+
+        We return a new face formed by mirroring self along the axes indicated
+        by xi, after appending any new vertices needed to vertex.
+        """
         face = Face()
         face.n = self.n
         face.material = self.material
@@ -46,7 +70,14 @@ class Face(object):
             face.uv[3], face.uv[-1] = face.uv[-1], face.uv[3]
         else:
             face.uv = None
+
+        # For each vertex in the face, in reverse order, reflect it via xi and
+        # store that new vertex in the new face.
         it = list(range(self.n))
+        # Regardless of whether the face has 3 or 4 vertices, if you swap the
+        # second one with the last one, we reverse the order of the vertices.
+        # ABC -> ACB, and
+        # ABCD -> ADCB (equivalent to DCBA)
         it[1], it[-1] = it[-1], it[1]
         face.indices = []
         c = 0
@@ -60,111 +91,140 @@ class Face(object):
                 c += 1
             face.indices.append(index)
         face.make_hash()
-        return face, c
+        return face
 
 
 class Material(object):
+    """
+    This is a glorified mutable tuple of (color, texture_name)
+    """
     __slots__ = ("color", "tex_name")
+
     def __init__(self):
         self.color = None
         self.tex_name = ""
 
-    def __eq__(self, othr):
-        return self.color == othr.color and self.tex_name == othr.tex_name
+    def __eq__(self, other):
+        return self.color == other.color and self.tex_name == other.tex_name
 
 
 class Obj(object):
-
     def __init__(self):
         self.vertex = []
         self.faces  = []
         self.mirror = None
         self.mirror_axis = None
 
-    def __iadd__(self, othr):
-        vmap = [0]*len(othr.vertex)
-        n = len(self.vertex)
-        vs = []
-        for i, v in enumerate(othr.vertex):
+    def __iadd__(self, other):
+        """
+        Override the `+=` operator
+
+        WARNING: this mutates the other object by changing the indices in the
+        faces! It's possible that the other Obj we're appending will contain
+        invalid state after this function returns.
+        """
+        # vmap is a map from indices in other.vertex to indices in self.vertex.
+        # We create it when appending vertices from other to self, and then use
+        # it when appending faces from other to self.
+        vmap = [0] * len(other.vertex)
+        n = len(self.vertex)  # Index of the next vertex to add to self.vertex
+        for i, v in enumerate(other.vertex):
             try:
                 vmap[i] = self.vertex.index(v)
             except ValueError:
                 vmap[i] = n
                 n += 1
-                vs.append(v)
-        self.vertex.extend(vs)
+                self.vertex.append(v)
 
-        fs = []
-        for face in othr.faces:
+        for face in other.faces:
             face.indices = [vmap[i] for i in face.indices]
             face.make_hash()
             if face not in self.faces:
-                fs.append(face)
-        self.faces.extend(fs)
+                self.faces.append(face)
         return self
 
     def expand_mirror(self):
-        if self.mirror not in [None, 0] and self.mirror_axis is not None:
-            x = y = z = 1.0
-            if self.mirror_axis&1: x = -1.0
-            if self.mirror_axis&2: y = -1.0
-            if self.mirror_axis&4: z = -1.0
-            xi = [x, y, z]
-            fs = []
-            for f in self.faces:
-                ff, c = f.mirror_copy(self.vertex, xi)
-                if c and ff in self.faces:
-                    self.vertex = self.vertex[:-c]
-                else:
-                    fs.append(ff)
-            self.faces.extend(fs)
-            self.mirror = None
+        """
+        For each face in the object, also include the face reflected across the
+        mirror, then remove the ability to mirror any more.
+
+        TODO: self.mirror appears to be unused. Can we use only mirror_axis
+        instead?
+        """
+        if self.mirror in [None, 0] or self.mirror_axis is None:
+            return
+
+        x = y = z = 1.0
+        if self.mirror_axis & 1: x = -1.0
+        if self.mirror_axis & 2: y = -1.0
+        if self.mirror_axis & 4: z = -1.0
+        xi = [x, y, z]
+        mirrored_faces = [f.create_mirror(self.vertex, xi) for f in self.faces]
+        self.faces.extend(mirrored_faces)
+        self.mirror = None
 
     def check_material_uv(self, materials, mmap):
+        """
+        For each face in the object, ensure that it has a compatible material:
+        - if the face's material has no texture, erase the face's uv values
+        - if the face has no uv values, ensure its material has no texture
+        - if the face has no material at all, give it our default color
+
+        materials is a list of materials, which might be mutated if we need to
+        add new materials to it.
+
+        mmap (which needs to be renamed!) is a mapping from the indices used in
+        our faces to the indices of the materials list.
+        TODO: explain why this exists
+        """
+        def get_color_index(color):
+            # If the color is not in the materials list yet, insert it and then
+            # return that new index.
+            m = Material()
+            m.color = color
+            try:
+                return materials.index(m)
+            except ValueError:
+                materials.append(m)
+                return len(materials) - 1
+
         for face in self.faces:
             if face.material >= 0:
                 mi = mmap[face.material]
                 face.material = mi
                 if not materials[mi].tex_name:
-                    # マテリアルにテクスチャが設定されていない -> 面のUV座標を消す
+                    # No texture is set in the material, so erase the UV
+                    # coordinates of the face.
                     face.uv = None
                 elif face.uv is None:
-                    # マテリアルにテクスチャが設定されているのに面にUV座標がない
-                    # -> 新規に色のみのマテリアルを割り当てる
-                    m = Material()
-                    m.color = materials[mi].color
-                    try:
-                        face.material = materials.index(m)
-                    except ValueError:
-                        face.material = len(materials)
-                        materials.append(m)
+                    # The material has a texture but the faces have no UV
+                    # coordinates, so assign a new material with only color and
+                    # not texture.
+                    face.material = get_color_index(materials[mi].color)
             else:
-                # マテリアル無しはオブジェクトの色でマテリアルを新規作成
+                # This face has no material yet. Create a new one with the right
+                # color.
                 face.uv = None
-                m = Material()
-                m.color = self.color
-                try:
-                    face.material = materials.index(m)
-                except ValueError:
-                    face.material = len(materials)
-                    materials.append(m)
+                face.material = get_color_index(self.color)
 
     def normalize(self, length=1.0, dy=-0.5):
-        max_y = 0.0
-        min_y = 0.0
-        for x,y,z in self.vertex:
-            if y > max_y:
-                max_y = y
-            if y < min_y:
-                min_y = y
+        """
+        Scale all the vertices so that the range of y values is length, and also
+        translate all vertices in the y direction so the smallest value is dy.
+        Using the default argument values, you'll move the vertices so that the
+        range of y values is -0.5 to +0.5, and x and z are scaled
+        proportionately.
+        """
+        ys = [y for _, y, _ in self.vertex]
+        max_y = max(ys)
+        min_y = min(ys)
         ly = max_y - min_y
-        fact = length / ly
-        self.vertex = [[x*fact, (y-min_y)*fact+dy, z*fact]
-                        for x,y,z in self.vertex]
+        factor = length / ly
+        self.vertex = [[x * factor, (y - min_y) * factor + dy, z * factor]
+                        for x, y, z in self.vertex]
 
 
 class MqoObject(object):
-
     re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
     re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
     re_face   = re.compile(r"""
@@ -369,8 +429,8 @@ if __name__ == "__main__":
                 print()
                 raise StopIteration
 
-    t1 = time.clock()
-    name = "../resources/img/haruna/haruna.mqo"
+    t1 = time.time()
+    name = "../resources/img/allosaurus/allosaurus.mqo"
     m = MqoObject(F(open(name)))
-    t2 = time.clock()
+    t2 = time.time()
     print(t2 - t1)

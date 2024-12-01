@@ -1,11 +1,17 @@
+"""
+The Keys class keeps track of which keys do what, and which ones are currently
+pressed down. Lots of public mutable state and introspection in here; should be
+rearchitected when better understood!
+"""
 import sdl2
 
 from program.const import CONFIG_DIR
 
 
 class Keys(object):
-    config_fname = CONFIG_DIR+"keyconfig.ini"
-    keymap_fname = CONFIG_DIR+"keymap.dat"
+    config_fname = CONFIG_DIR + "keyconfig.ini"
+    keymap_fname = CONFIG_DIR + "keymap.dat"
+
     def __init__(self):
         self.reset()
         self.default()
@@ -53,19 +59,6 @@ class Keys(object):
                       "brake",
                       "change_gun",
                       "toggle_HUD"]
-        # self.name2 = ["Accel Forward ",
-        #               "Accel Backward",
-        #               "Accel Right   ",
-        #               "Accel Left    ",
-        #               "Booster       ",
-        #               "brake         ",
-        #               "Turn Right    ",
-        #               "Turn Left     ",
-        #               "Turn Up       ",
-        #               "Turn Down     ",
-        #               "Shoot         ",
-        #               "Change Gun    ",
-        #               "HUD ON/OFF    "]
         self.name2 = ["Accel Forward ",
                       "      Backward",
                       "      Right   ",
@@ -76,7 +69,7 @@ class Keys(object):
                       "     Down     ",
                       "Shoot         ",
                       "Booster       ",
-                      "brake         ",
+                      "Brake         ",
                       "Change Gun    ",
                       "HUD ON/OFF    "]
 
@@ -86,11 +79,11 @@ class Keys(object):
 
     def load_config(self):
         try:
-            f = open(self.config_fname)
-            for line in f:
-                name, value = line.split("=")
-                if hasattr(self, name):
-                    setattr(self, name, int(value))
+            with open(self.config_fname) as f:
+                for line in f:
+                    name, value = line.split("=")
+                    if hasattr(self, name):
+                        setattr(self, name, int(value))
         except IOError:
             self.save()
             return
@@ -98,19 +91,16 @@ class Keys(object):
     def load_map(self):
         self.key_map = {}
         try:
-            f = open(self.keymap_fname)
-            for line in f:
-                name, value = line.split("=")
-                self.key_map[int(value)] = name
+            with open(self.keymap_fname) as f:
+                for line in f:
+                    name, value = line.split("=")
+                    self.key_map[int(value)] = name
         except IOError:
             for key in dir(sdl2):
                 if key.startswith("SDLK_"):
                     self.key_map[getattr(sdl2, key)] = key[5:].upper()
 
     def save(self):
-        f = open(self.config_fname, "w")
-        for name in self.names:
-            f.write("%s=%i\n"%(name, getattr(self, name)))
-        f.close()
-
-
+        with open(self.config_fname, "w") as f:
+            for name in self.names:
+                f.write("%s=%i\n"%(name, getattr(self, name)))

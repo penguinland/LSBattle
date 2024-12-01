@@ -24,6 +24,7 @@ GAME_NAME = b"Light Speed Battle"
 
 c = 299792458.0 #Light Speed [m/sec]
 
+# Sets of keys that should be considered synonymous
 KS_RETURN = {sdl2.SDLK_RETURN, sdl2.SDLK_RETURN2, sdl2.SDLK_KP_ENTER}
 KS_ESC = {sdl2.SDLK_ESCAPE, sdl2.SDLK_BACKSPACE, sdl2.SDLK_DELETE}
 
