@@ -245,6 +245,9 @@ class MqoObject(object):
                            """, re.VERBOSE)
 
     def __init__(self, imqo):
+        """
+        imqo is an open file handle that contains an MQO (Metasequoia) document
+        """
         self.imqo = imqo
         self.check_header()
         self.obj = Obj()
