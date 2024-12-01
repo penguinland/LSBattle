@@ -124,9 +124,9 @@ class Obj(object):
             return
 
         x = y = z = 1.0
-        if self.mirror_axis&1: x = -1.0
-        if self.mirror_axis&2: y = -1.0
-        if self.mirror_axis&4: z = -1.0
+        if self.mirror_axis & 1: x = -1.0
+        if self.mirror_axis & 2: y = -1.0
+        if self.mirror_axis & 4: z = -1.0
         xi = [x, y, z]
         fs = []
         for f in self.faces:
