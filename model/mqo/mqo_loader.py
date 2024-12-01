@@ -320,7 +320,8 @@ class MqoObject(object):
         materials = []
         while True:
             line = next(self.imqo).strip()
-            if line == "}":break
+            if line == "}":
+                break
             material = Material()
             fields = re_comp.split(line)
             for field in fields:
@@ -338,7 +339,8 @@ class MqoObject(object):
         vertices = []
         while True:
             line = next(self.imqo).strip()
-            if line == "}":break
+            if line == "}":
+                break
             m = self.re_chunk.match(line)
             if m:
                 chunk = m.group(1).lower()
@@ -386,7 +388,8 @@ class MqoObject(object):
         vertices = []
         while True:
             line = next(self.imqo).strip()
-            if line == "}":break
+            if line == "}":
+                break
             v = list(map(float, line.split()))
             vertices.append(v)
         return vertices
@@ -395,7 +398,8 @@ class MqoObject(object):
         faces = []
         while True:
             line = next(self.imqo).strip()
-            if line == "}":break
+            if line == "}":
+                break
             m = self.re_face.match(line)
             face = Face(*m.groups())
             if face.n != 0 and face not in faces:
@@ -405,7 +409,8 @@ class MqoObject(object):
     def skip_chunk(self):
         while True:
             line = next(self.imqo).strip()
-            if line == "}":break
+            if line == "}":
+                break
             if self.re_chunk.match(line):
                 self.skip_chunk()
 
