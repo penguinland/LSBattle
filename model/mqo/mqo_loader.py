@@ -208,13 +208,9 @@ class Obj(object):
                 face.material = get_color_index(self.color)
 
     def normalize(self, length=1.0, dy=-0.5):
-        max_y = 0.0
-        min_y = 0.0
-        for _, y, _ in self.vertex:
-            if y > max_y:
-                max_y = y
-            if y < min_y:
-                min_y = y
+        ys = [y for _, y, _ in self.vertex]
+        max_y = max(ys)
+        min_y = min(ys)
         ly = max_y - min_y
         factor = length / ly
         self.vertex = [[x * factor, (y - min_y) * factor + dy, z * factor]
