@@ -164,7 +164,6 @@ class Obj(object):
 
 
 class MqoObject(object):
-
     re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
     re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
     re_face   = re.compile(r"""
@@ -369,8 +368,8 @@ if __name__ == "__main__":
                 print()
                 raise StopIteration
 
-    t1 = time.clock()
+    t1 = time.time()
     name = "../resources/img/haruna/haruna.mqo"
     m = MqoObject(F(open(name)))
-    t2 = time.clock()
+    t2 = time.time()
     print(t2 - t1)
