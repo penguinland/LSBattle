@@ -153,10 +153,7 @@ class Obj(object):
         fs = []
         for f in self.faces:
             ff, c = f.mirror_copy(self.vertex, xi)
-            if c and ff in self.faces:
-                self.vertex = self.vertex[:-c]
-            else:
-                fs.append(ff)
+            fs.append(ff)
         self.faces.extend(fs)
         self.mirror = None
 
