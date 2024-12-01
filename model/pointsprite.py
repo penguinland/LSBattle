@@ -190,7 +190,7 @@ class PointSprite(object):
                 # TODO: name this better when you understand what it is
                 vector = (GLfloat*len(U))(*U)
             else:
-                vector = (GLfloat*(self.n*4))(*([0.0,0.0,0.0,1.0]*self.n))
+                vector = (GLfloat*(self.n*4))(*([0.0, 0.0, 0.0, 1.0] * self.n))
             glVertexAttribPointer(
                     self.U_local, 4, GL_FLOAT, GL_FALSE, 0, vector)
 
