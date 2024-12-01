@@ -91,7 +91,14 @@ class Obj(object):
         self.mirror = None
         self.mirror_axis = None
 
-    def __iadd__(self, other):  # Override the `+=` operator
+    def __iadd__(self, other):
+        """
+        Override the `+=` operator
+
+        WARNING: this mutates the other object by changing the indices in the
+        faces! It's possible that the other Obj we're appending will contain
+        invalid state after this function returns.
+        """
         # vmap is a map from indices in other.vertex to indices in self.vertex.
         # We create it when appending vertices from other to self, and then use
         # it when appending faces from other to self.
