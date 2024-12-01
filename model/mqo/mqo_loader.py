@@ -248,21 +248,20 @@ class MqoObject(object):
         """
         imqo is an open file handle that contains an MQO (Metasequoia) document
         """
-        self.imqo = imqo
-        self._check_header()
+        self._check_header(imqo)
         self.obj = Obj()
         materials = []
         try:
             while True:
-                chunk = self._search_chunk().lower()
+                chunk = self._search_chunk(imqo).lower()
                 if chunk == "object": # 複数あり
-                    obj = self._object_chunk()
+                    obj = self._object_chunk(imqo)
                     obj.expand_mirror()
                     self.obj += obj
                 elif chunk == "material": # 1回
-                    materials = self._material_chunk()
+                    materials = self._material_chunk(imqo)
                 else:
-                    self._skip_chunk()
+                    self._skip_chunk(imqo)
         except StopIteration:
             pass
         if not materials:
@@ -286,12 +285,12 @@ class MqoObject(object):
 
     ###### read tool ######
 
-    def _check_header(self):
-        firstline = next(self.imqo)
+    def _check_header(self, imqo):
+        firstline = next(imqo)
         if "Metasequoia Document" not in firstline:
             raise IOError("This file is not Metasequoia Document")
 
-        line = next(self.imqo)
+        line = next(imqo)
         m = re.match(r"^Format (\w+) Ver (\d+)\.(\d+)", line)
         if m:
             if m.group(1) != "Text":
@@ -301,9 +300,9 @@ class MqoObject(object):
         else:
             raise IOError("This file format is not supported")
 
-    def _search_chunk(self):
+    def _search_chunk(self, imqo):
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             m = self.re_chunk.match(line)
             if m:
                 return m.group(1)
@@ -311,7 +310,7 @@ class MqoObject(object):
             if m:
                 return "object"
 
-    def _material_chunk(self):
+    def _material_chunk(self, imqo):
         re_comp = re.compile(r"""
                              \s+
                              (?=
@@ -324,7 +323,7 @@ class MqoObject(object):
         re_field = re.compile(r"^(\w+)\(([^)]*)\)")
         materials = []
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             if line == "}":
                 break
             material = Material()
@@ -339,22 +338,22 @@ class MqoObject(object):
             materials.append(material)
         return materials
 
-    def _object_chunk(self):
+    def _object_chunk(self, imqo):
         obj = Obj()
         vertices = []
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             if line == "}":
                 break
             m = self.re_chunk.match(line)
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertices = self._vertex_chunk()
+                    vertices = self._vertex_chunk(imqo)
                 elif chunk == "face":
-                    obj.faces = self._face_chunk()
+                    obj.faces = self._face_chunk(imqo)
                 else:
-                    self._skip_chunk()
+                    self._skip_chunk(imqo)
             else:
                 fields = line.split()
                 name = fields[0]
@@ -389,20 +388,20 @@ class MqoObject(object):
 
         return obj
 
-    def _vertex_chunk(self):
+    def _vertex_chunk(self, imqo):
         vertices = []
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             if line == "}":
                 break
             v = list(map(float, line.split()))
             vertices.append(v)
         return vertices
 
-    def _face_chunk(self):
+    def _face_chunk(self, imqo):
         faces = []
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             if line == "}":
                 break
             m = self.re_face.match(line)
@@ -411,13 +410,13 @@ class MqoObject(object):
                 faces.append(face)
         return faces
 
-    def _skip_chunk(self):
+    def _skip_chunk(self, imqo):
         while True:
-            line = next(self.imqo).strip()
+            line = next(imqo).strip()
             if line == "}":
                 break
             if self.re_chunk.match(line):
-                self._skip_chunk()
+                self._skip_chunk(imqo)
 
 
 if __name__ == "__main__":
