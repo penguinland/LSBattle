@@ -249,20 +249,20 @@ class MqoObject(object):
         imqo is an open file handle that contains an MQO (Metasequoia) document
         """
         self.imqo = imqo
-        self.check_header()
+        self._check_header()
         self.obj = Obj()
         materials = []
         try:
             while True:
-                chunk = self.search_chunk().lower()
+                chunk = self._search_chunk().lower()
                 if chunk == "object": # 複数あり
-                    obj = self.object_chunk()
+                    obj = self._object_chunk()
                     obj.expand_mirror()
                     self.obj += obj
                 elif chunk == "material": # 1回
-                    materials = self.material_chunk()
+                    materials = self._material_chunk()
                 else:
-                    self.skip_chunk()
+                    self._skip_chunk()
         except StopIteration:
             pass
         if not materials:
@@ -286,7 +286,7 @@ class MqoObject(object):
 
     ###### read tool ######
 
-    def check_header(self):
+    def _check_header(self):
         firstline = next(self.imqo)
         if "Metasequoia Document" not in firstline:
             raise IOError("This file is not Metasequoia Document")
@@ -301,7 +301,7 @@ class MqoObject(object):
         else:
             raise IOError("This file format is not supported")
 
-    def search_chunk(self):
+    def _search_chunk(self):
         while True:
             line = next(self.imqo).strip()
             m = self.re_chunk.match(line)
@@ -311,7 +311,7 @@ class MqoObject(object):
             if m:
                 return "object"
 
-    def material_chunk(self):
+    def _material_chunk(self):
         re_comp = re.compile(r"""
                              \s+
                              (?=
@@ -339,7 +339,7 @@ class MqoObject(object):
             materials.append(material)
         return materials
 
-    def object_chunk(self):
+    def _object_chunk(self):
         obj = Obj()
         vertices = []
         while True:
@@ -350,11 +350,11 @@ class MqoObject(object):
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertices = self.vertex_chunk()
+                    vertices = self._vertex_chunk()
                 elif chunk == "face":
-                    obj.faces = self.face_chunk()
+                    obj.faces = self._face_chunk()
                 else:
-                    self.skip_chunk()
+                    self._skip_chunk()
             else:
                 fields = line.split()
                 name = fields[0]
@@ -389,7 +389,7 @@ class MqoObject(object):
 
         return obj
 
-    def vertex_chunk(self):
+    def _vertex_chunk(self):
         vertices = []
         while True:
             line = next(self.imqo).strip()
@@ -399,7 +399,7 @@ class MqoObject(object):
             vertices.append(v)
         return vertices
 
-    def face_chunk(self):
+    def _face_chunk(self):
         faces = []
         while True:
             line = next(self.imqo).strip()
@@ -411,13 +411,13 @@ class MqoObject(object):
                 faces.append(face)
         return faces
 
-    def skip_chunk(self):
+    def _skip_chunk(self):
         while True:
             line = next(self.imqo).strip()
             if line == "}":
                 break
             if self.re_chunk.match(line):
-                self.skip_chunk()
+                self._skip_chunk()
 
 
 if __name__ == "__main__":
