@@ -164,9 +164,22 @@ class Obj(object):
         self.mirror = None
 
     def check_material_uv(self, materials, mmap):
+        """
+        For each face in the object, ensure that it has a compatible material:
+        - if the face's material has no texture, erase the face's uv values
+        - if the face has no uv values, ensure its material has no texture
+        - if the face has no material at all, give it our default color
+
+        materials is a list of materials, which might be mutated if we need to
+        add new materials to it.
+
+        mmap (which needs to be renamed!) is a mapping from the indices used in
+        our faces to the indices of the materials list.
+        TODO: explain why this exists
+        """
         def get_color_index(color):
-            # If the color is not in an index yet, insert it and then return
-            # that new index.
+            # If the color is not in the materials list yet, insert it and then
+            # return that new index.
             m = Material()
             m.color = color
             try:
@@ -180,12 +193,13 @@ class Obj(object):
                 mi = mmap[face.material]
                 face.material = mi
                 if not materials[mi].tex_name:
-                    # No texture is set in the material -> Erase the UV
-                    # coordinates of the face
+                    # No texture is set in the material, so erase the UV
+                    # coordinates of the face.
                     face.uv = None
                 elif face.uv is None:
                     # The material has a texture but the faces have no UV
-                    # coordinates -> assign a new material with only color
+                    # coordinates, so assign a new material with only color and
+                    # not texture.
                     face.material = get_color_index(materials[mi].color)
             else:
                 # This face has no material yet. Create a new one with the right
