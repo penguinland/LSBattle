@@ -1,6 +1,4 @@
-# coding: utf8
 # cython: profile=False
-# go/matrix44.pyx
 cimport cython
 from libc.math cimport sqrt, sin, cos
 DEF pi = 3.141592653589793115997963468544185161590576171875

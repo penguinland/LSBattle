@@ -1,6 +1,4 @@
-# coding: utf8
 # cython: profile=False
-# go/worldline.pyx
 cimport cython
 from libc.math cimport sqrt
 

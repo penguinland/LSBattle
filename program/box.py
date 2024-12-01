@@ -1,13 +1,12 @@
-# coding: utf8
-# box.py
-import os, sys
+import os
+import sys
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import sdl2
 import sdl2.ext
 
-from program.const import VIEW_ANGLE, GAME_NAME, CONFIG_DIR, disp_sizes
+from program.const import VIEW_ANGLE, GAME_NAME, CONFIG_DIR, DISP_SIZES
 from program import script
 
 
@@ -23,7 +22,7 @@ class _Box(object):
         self.Y = 600
         self.FULL_SCREEN = False
         self.MODE = "EASY"
-        self.SAVE = False
+        self._should_save = False  # Whether to write to setting.ini
         try:
             for line in open(CONFIG_DIR+"setting.ini"):
                 line = line.strip()
@@ -44,42 +43,43 @@ class _Box(object):
                         self.MODE = "NORMAL"
                     elif v == "HARD":
                         self.MODE = "HARD"
-            if (X, Y) not in disp_sizes:
-                X, Y = disp_sizes[0]
+            if (X, Y) not in DISP_SIZES:
+                X, Y = DISP_SIZES[0]
             self.X = X
             self.Y = Y
             self.FULL_SCREEN = FULL_SCREEN
         except:
-            self.SAVE = True
-            pass
+            self._should_save = True
 
     def game_init(self):
-        if not sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) and self.window is None:
-            sdl2.ext.init()
-            w_mode = sdl2.SDL_DisplayMode()
-            sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
-            if self.X > w_mode.w or self.Y > w_mode.h:
-                self.X, self.Y = disp_sizes[0]
-                self.SAVE = True
-            flg = sdl2.SDL_WINDOW_OPENGL
-            if self.FULL_SCREEN:
-                flg |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
-                self.X = w_mode.w
-                self.Y = w_mode.h
-                self.SAVE = True
-            self.window = sdl2.SDL_CreateWindow(GAME_NAME,
-                                                sdl2.SDL_WINDOWPOS_UNDEFINED,
-                                                sdl2.SDL_WINDOWPOS_UNDEFINED,
-                                                self.X, self.Y,
-                                                flg)
-            if not self.window:
-                print((sdl2.SDL_GetError()))
-                sdl2.ext.SDL_quit()
-                sys.exit(-1)
-            self.context = sdl2.SDL_GL_CreateContext(self.window)
+        if sdl2.SDL_WasInit(sdl2.SDL_INIT_EVENTS) or self.window is not None:
+            return  # Already initialized
 
-            self.opengl_init()
-            self.resize()
+        sdl2.ext.init()
+        w_mode = sdl2.SDL_DisplayMode()
+        sdl2.SDL_GetCurrentDisplayMode(0, w_mode)
+        if self.X > w_mode.w or self.Y > w_mode.h:
+            self.X, self.Y = DISP_SIZES[0]
+            self._should_save = True
+        flags = sdl2.SDL_WINDOW_OPENGL
+        if self.FULL_SCREEN:
+            flags |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
+            self.X = w_mode.w
+            self.Y = w_mode.h
+            self._should_save = True
+        self.window = sdl2.SDL_CreateWindow(GAME_NAME,
+                                            sdl2.SDL_WINDOWPOS_UNDEFINED,
+                                            sdl2.SDL_WINDOWPOS_UNDEFINED,
+                                            self.X, self.Y,
+                                            flags)
+        if not self.window:
+            print((sdl2.SDL_GetError()))
+            sdl2.ext.SDL_quit()
+            sys.exit(-1)
+        self.context = sdl2.SDL_GL_CreateContext(self.window)
+
+        self.opengl_init()
+        self.resize()
 
     def sdl2_quit(self):
         sdl2.SDL_GL_DeleteContext(self.context)
@@ -138,38 +138,40 @@ class _Box(object):
         self.far_clip = script.ui.far_clip*scale
 
     def set_displaysize(self, i):
-        if disp_sizes[i][0] != self.X and disp_sizes[i][1] != self.Y:
-            self.X, self.Y = disp_sizes[i]
-            self.FULL_SCREEN = False
-            self.SAVE = True
-            self.sdl2_quit()
-            self.game_init()
+        if DISP_SIZES[i][0] == self.X and DISP_SIZES[i][1] == self.Y:
+            return  # Already the right size
+
+        self.X, self.Y = DISP_SIZES[i]
+        self.FULL_SCREEN = False
+        self._should_save = True
+        self.sdl2_quit()
+        self.game_init()
 
     def set_fullscreen(self):
-        if not self.FULL_SCREEN:
-            self.FULL_SCREEN = True
-            self.SAVE = True
-            self.sdl2_quit()
-            self.game_init()
+        if self.FULL_SCREEN:
+            return  # Already in fullscreen mode
+
+        self.FULL_SCREEN = True
+        self._should_save = True
+        self.sdl2_quit()
+        self.game_init()
 
     def set_mode(self, mode):
         self.MODE = mode
-        self.SAVE = True
+        self._should_save = True
 
     def save(self):
-        if self.SAVE:
-            try:
-                f = open(os.path.join(CONFIG_DIR, "setting.ini"), "w")
-                f.write("DISPLAY_SIZE_X=%i\n"%self.X)
-                f.write("DISPLAY_SIZE_Y=%i\n"%self.Y)
-                if self.FULL_SCREEN:
-                    f.write("FULL_SCREEN=True\n")
-                else:
-                    f.write("FULL_SCREEN=False\n")
-                f.write("MODE=%s\n"%self.MODE)
-                f.close()
-            except:
-                pass
+        if not self._should_save:
+            return
+
+        try:
+            with open(os.path.join(CONFIG_DIR, "setting.ini"), "w") as f:
+                f.write(f"DISPLAY_SIZE_X={self.X}\n")
+                f.write(f"DISPLAY_SIZE_Y={self.Y}\n")
+                f.write(f"FULL_SCREEN={self.FULL_SCREEN}\n")
+                f.write(f"MODE={self.MODE}\n")
+        except:
+            pass
 
 
 BOX = _Box()

@@ -1,5 +1,8 @@
-# -*- coding: utf8 -*-
-# pointsplite.py
+"""
+This file is all about using OpenGL to draw things. It provides the PointSprite
+class.
+"""
+
 from OpenGL.GL import *
 
 from program.utils import compile_program, load_texture, DY_TEXTURE_KYU
@@ -23,98 +26,6 @@ void main() {
     gl_FrontColor = color;
 }
 """
-_fshader = """
-#version 120
-uniform sampler2D texture;
-void main() {
-    vec4 color = gl_Color * texture2D(texture, gl_PointCoord.xy);
-    if(color.a == 0.0) discard;
-    gl_FragColor = color;
-}
-"""
-
-class PointSprite(object):
-
-    def __init__(self, vertices=None, size=None, color=None, size_w=True, texture=DY_TEXTURE_KYU):
-        if vertices is not None:
-            n = len(vertices)
-            self.vertices = (GLfloat*n)(*vertices)
-            self.n = n / 3
-        if size is None:
-            size_type = "attribute"
-            size_local_geter = glGetAttribLocation
-        else:
-            self.size = size
-            size_type = "uniform"
-            size_local_geter = glGetUniformLocation
-        self._draw = getattr(self, "_draw_%i_%i"%(1 if vertices is None else 0,
-                                                  1 if size is None else 0)
-                            )
-
-        self.color = color
-
-        if size_w:
-            psize = "gl_PointSize = size / gl_Position.w"
-            color_decay = ""
-            normalize_to_look = "//"
-        else:
-            psize = "gl_PointSize = size"
-            color_decay = "//"
-            normalize_to_look = ""
-        self.program_id = compile_program(
-            _vshader%(size_type,
-                normalize_to_look,
-                psize,
-                color_decay),
-            _fshader)
-        self.size_local = size_local_geter(self.program_id, "size")
-        self.vec_local  = glGetUniformLocation(self.program_id, "Xp")
-        self.mat_local  = glGetUniformLocation(self.program_id, "lorentz")
-        self.tex_local  = glGetUniformLocation(self.program_id, "texture")
-
-        self.texture_id = load_texture(texture)
-
-    def draw(self, Xp, L, vertices=None, size=None, color=None):
-        glUseProgram(self.program_id)
-        if color is None:
-            glColor(*self.color)
-        else:
-            glColor(*color)
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
-        glUniform1i(self.tex_local, 0)
-        glUniform3fv(self.vec_local, 1, Xp.get_lis3())
-        glUniformMatrix4fv(self.mat_local, 1, GL_FALSE, L.to_glsl())
-        self._draw(vertices, size)
-        glUseProgram(0)
-
-    def _draw_0_0(self, vertices, size):
-        if size is None:
-            glUniform1f(self.size_local, self.size)
-        else:
-            glUniform1f(self.size_local, size)
-        glVertexPointer(3, GL_FLOAT, 0, self.vertices)
-        glDrawArrays(GL_POINTS, 0, self.n)
-    def _draw_0_1(self, vertices, sizes):
-        glEnableVertexAttribArray(self.size_local)
-        glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*self.n)(*sizes))
-        glVertexPointer(3, GL_FLOAT, 0, self.vertices)
-        glDrawArrays(GL_POINTS, 0, self.n)
-        glDisableVertexAttribArray(self.size_local)
-    def _draw_1_0(self, vertices, size):
-        if size is None:
-            glUniform1f(self.size_local, self.size)
-        else:
-            glUniform1f(self.size_local, size)
-        n = len(vertices)
-        glVertexPointer(3, GL_FLOAT, 0, (GLfloat*n)(*vertices))
-        glDrawArrays(GL_POINTS, 0, n//3)
-    def _draw_1_1(self, vertices, sizes):
-        n = len(sizes)
-        glEnableVertexAttribArray(self.size_local)
-        glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*n)(*sizes))
-        glVertexPointer(3, GL_FLOAT, 0, (GLfloat*(n*3))(*vertices))
-        glDrawArrays(GL_POINTS, 0, n)
-        glDisableVertexAttribArray(self.size_local)
 
 _vshader_doppler = """
 #version 120
@@ -202,9 +113,24 @@ void main() {
     gl_FrontColor = color / 255.0;
 }
 """
-class PointSpriteDoppler(object):
 
-    def __init__(self, vertices=None, size=None, color=None, size_w=True, texture=DY_TEXTURE_KYU):
+_fshader = """
+#version 120
+uniform sampler2D texture;
+void main() {
+    vec4 color = gl_Color * texture2D(texture, gl_PointCoord.xy);
+    if(color.a == 0.0) discard;
+    gl_FragColor = color;
+}
+"""
+
+
+class PointSprite(object):
+    def __init__(self, vertices=None, size=None, color=None, size_w=True,
+                 texture=DY_TEXTURE_KYU, doppler_shifted=True):
+        # Only the player themself should not be doppler shifted.
+        self._doppler_shifted = doppler_shifted
+
         if vertices is not None:
             n = len(vertices)
             self.vertices = (GLfloat*n)(*vertices)
@@ -230,17 +156,20 @@ class PointSpriteDoppler(object):
             psize = "gl_PointSize = size"
             color_decay = "//"
             normalize_to_look = ""
+
+        vshader = _vshader_doppler if doppler_shifted else _vshader
         self.program_id = compile_program(
-            _vshader_doppler%(size_type,
+            vshader%(size_type,
                 normalize_to_look,
                 psize,
                 color_decay),
             _fshader)
         self.size_local = size_local_geter(self.program_id, "size")
         self.vec_local  = glGetUniformLocation(self.program_id, "Xp")
-        self.U_local  = glGetAttribLocation(self.program_id, "UU")
         self.mat_local  = glGetUniformLocation(self.program_id, "lorentz")
         self.tex_local  = glGetUniformLocation(self.program_id, "texture")
+        if doppler_shifted:
+            self.U_local  = glGetAttribLocation(self.program_id, "UU")
 
         self.texture_id = load_texture(texture)
 
@@ -254,16 +183,23 @@ class PointSpriteDoppler(object):
         glUniform1i(self.tex_local, 0)
         glUniform3fv(self.vec_local, 1, Xp.get_lis3())
         glUniformMatrix4fv(self.mat_local, 1, GL_FALSE, L.to_glsl())
-        glEnableVertexAttribArray(self.U_local)
-        if U:
-            glVertexAttribPointer(self.U_local, 4, GL_FLOAT, GL_FALSE, 0, (GLfloat*len(U))(*U))
-        else:
-            glVertexAttribPointer(self.U_local, 4, GL_FLOAT, GL_FALSE, 0,
-                (GLfloat*(self.n*4))(*([0.0,0.0,0.0,1.0]*self.n)))
+
+        if self._doppler_shifted:
+            glEnableVertexAttribArray(self.U_local)
+            if U:
+                # TODO: name this better when you understand what it is
+                vector = (GLfloat*len(U))(*U)
+            else:
+                vector = (GLfloat*(self.n*4))(*([0.0, 0.0, 0.0, 1.0] * self.n))
+            glVertexAttribPointer(
+                    self.U_local, 4, GL_FLOAT, GL_FALSE, 0, vector)
+
         self._draw(vertices, size)
         glUseProgram(0)
 
-    def _draw_0_0(self, vertices, size):
+    # TODO: simplify this into a single _draw() function.
+
+    def _draw_0_0(self, vertices, size):  # size and vertices both in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
@@ -271,14 +207,14 @@ class PointSpriteDoppler(object):
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
 
-    def _draw_0_1(self, vertices, sizes):
+    def _draw_0_1(self, vertices, sizes):  # only vertices in __init__
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*self.n)(*sizes))
         glVertexPointer(3, GL_FLOAT, 0, self.vertices)
         glDrawArrays(GL_POINTS, 0, self.n)
         glDisableVertexAttribArray(self.size_local)
 
-    def _draw_1_0(self, vertices, size):
+    def _draw_1_0(self, vertices, size):  # only size in __init__
         if size is None:
             glUniform1f(self.size_local, self.size)
         else:
@@ -287,7 +223,7 @@ class PointSpriteDoppler(object):
         glVertexPointer(3, GL_FLOAT, 0, (GLfloat*n)(*vertices))
         glDrawArrays(GL_POINTS, 0, n//3)
 
-    def _draw_1_1(self, vertices, sizes):
+    def _draw_1_1(self, vertices, sizes):  # nothing supplied in __init__
         n = len(sizes)
         glEnableVertexAttribArray(self.size_local)
         glVertexAttribPointer(self.size_local, 1, GL_FLOAT, GL_FALSE, 0, (GLfloat*n)(*sizes))

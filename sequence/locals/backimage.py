@@ -1,13 +1,11 @@
-#coding: utf8
-# backimage.py
 import sys
 
 from OpenGL.GL import *
 import sdl2
 
+from program import script
 from program.box import BOX
 from program.utils import load_texture, search_imagefile, FlatScreen
-from program import script
 
 
 class BackImage(object):

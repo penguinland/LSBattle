@@ -1,5 +1,4 @@
-#coding: utf8
-from ..common import Block, color_func, high_func_num, func_str
+from ..common import Block, color_func, high_func_num, parse_string
 
 
 class gun_info(Block):
@@ -9,7 +8,7 @@ class gun_info(Block):
         self.position_x = 0.68
         self.position_y = 0.055
         self.height = 0.04
-        self._format_func = func_str
+        self._format_func = parse_string
         self._color_func = color_func
         self._position_x_func = float
         self._position_y_func = float

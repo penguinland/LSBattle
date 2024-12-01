@@ -1,19 +1,17 @@
-# coding: utf8
-# entity/player.py
 from math import pi
 
 from OpenGL.GL import *
 
+from entity import Bullets
 from go import Vector3, Vector4D, Matrix44, Lorentz, Quaternion
 from go import PhaseSpace, WorldLine
 from go import calc_repulsion
-from entity import Bullets
-from model.pointsprite import PointSprite
 from model.lines import Lines
+from model.pointsprite import PointSprite
+from program import script
 from program.box import BOX
 from program.utils import FlatScreen, fill_screen, DY_TEXTURE_EDGE
 from program.text import drawSentence
-from program import script
 
 
 class PlayerState(object):
@@ -41,10 +39,16 @@ class PlayerState(object):
             }
 
     def gun_change(self):
-        self.gun_mode = (self.gun_mode+1)%self.gun_num
+        """
+        Switch to the next gun
+        """
+        self.gun_mode = (self.gun_mode + 1) % self.gun_num
         self.make_gun_icon()
 
     def gun_get(self):
+        """
+        Add the next gun to the player's inventory, and switch to it immediately
+        """
         if self.gun_num < self.max_gun_num:
             self.gun_num += 1
         self.gun_mode = self.gun_num - 1
@@ -119,8 +123,8 @@ class Gun(object):
             self._shoot(ds, par_frame)
             keys.k_bullet -= self.reload_time * par_frame
 
-class Player(object):
 
+class Player(object):
     def __init__(self, world, level, state, pos):
         self.world = world
         self.state = state
@@ -161,7 +165,8 @@ class Player(object):
         self.on_position = PointSprite(color=script.player.window.color,
                                        size=BOX.Y*script.player.window.size,
                                        size_w=False,
-                                       texture=tex)
+                                       texture=tex,
+                                       doppler_shifted=False)
         r, g, b, a = script.player.window.pre_color
         self.lines = Lines([r, g, b, a/2])
 
@@ -353,11 +358,14 @@ class Player(object):
                 vertices_p.extend(X_PLC.get_lis3())
                 X_FLC = enemy.worldline.get_X_FP(self.P.X, 1.0)
                 vertices_f.extend(X_FLC.get_lis3())
-        if vertices_p:
-            self.on_position.draw(self.P.X, L, vertices_p)
-            self.on_position.draw(self.P.X, L, vertices_f,
-                                  size=BOX.Y*script.player.window.pre_size,
-                                  color=script.player.window.pre_color)
-            glLineWidth(5)
-            self.lines.draw(self.P.X, L, vertices_p, vertices_f)
-            glLineWidth(1)
+
+        if not vertices_p:
+            return  # Nothing to draw
+
+        self.on_position.draw(self.P.X, L, vertices_p)
+        self.on_position.draw(self.P.X, L, vertices_f,
+                              size=BOX.Y*script.player.window.pre_size,
+                              color=script.player.window.pre_color)
+        glLineWidth(5)
+        self.lines.draw(self.P.X, L, vertices_p, vertices_f)
+        glLineWidth(1)

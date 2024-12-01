@@ -1,5 +1,3 @@
-# coding: utf8
-# go/__init__.py
 from .vector3 import Vector3
 from .vector4D import Vector4D
 from .matrix44 import Matrix44, Lorentz

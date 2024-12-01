@@ -1,5 +1,3 @@
-# coding: utf8
-# utils/playing.py
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -19,6 +17,7 @@ def fill_screen(r, g, b, a=1.0):
     glVertex(0,     BOX.Y)
     glEnd()
     FlatScreen.pop()
+
 
 class FlatScreen(object):
     """
@@ -50,6 +49,7 @@ class FlatScreen(object):
         glEnable(GL_DEPTH_TEST)
         cls.matrix_stack = None
 
+
 class FramePerSec(object):
     """
     count flame par second
@@ -65,6 +65,7 @@ class FramePerSec(object):
 
     def get(self):
         return self.n / sum(self.l)
+
 
 class Snapshot(object):
     """

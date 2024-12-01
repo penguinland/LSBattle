@@ -1,11 +1,11 @@
-#coding: utf8
 from datetime import date
 
 from OpenGL import GL
 
-from program.const import *
 from program.box import BOX
+from program.const import *
 from sequence.locals import MenuItems, M
+
 
 _rank = ["1st",
          "2nd",
@@ -17,6 +17,7 @@ _rank = ["1st",
          "8th",
          "9th",
          "10th"]
+
 
 class ShowHighScore(object):
     def __init__(self, scores, i):

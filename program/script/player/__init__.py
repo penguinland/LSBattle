@@ -1,10 +1,10 @@
-#coding: utf8
-from ..common import Block, color_func, high_func_num, func_str
+from ..common import Block, color_func, high_func_num, parse_string
 
 from .gun import gun
 from .hpbar import hpbar
 from .gun_info import gun_info
 from .window import window
+
 
 _default_gun = [
     ["Hand Gun",    None,       20.0,  300, False, 0.0,  0,  1,    0.025],
@@ -12,6 +12,8 @@ _default_gun = [
     ["Machine Gun", "M134",     50.0,  100,  True, 0.01,  5,  1,    0.02],
     ["Beam Gun",    "chainsaw", 25.0,    5,  True, 0.5, 10,  0.25, 0.01]
 ]
+
+
 class Player(Block):
     def __init__(self):
         self.collision_radius = 0.35

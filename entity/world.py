@@ -1,5 +1,3 @@
-# coding: utf8
-# entity/world.py
 from math import pi
 from random import random, randint
 

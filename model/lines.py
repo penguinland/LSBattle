@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-# lines.py
 import os
 
 from OpenGL.GL import *
@@ -8,38 +6,41 @@ from program.utils import compile_program
 
 
 class Lines(object):
-    def load_program(self):
-        self.program_id = compile_program(
-        """
-        #version 120
-        uniform vec3 Xp;
-        uniform mat4 lorentz;
-        void main() {
-            vec3 v = gl_Vertex.xyz - Xp;
-            vec4 vertex = lorentz * vec4(v, -length(v));
-            vertex.w = 1.0;
-            gl_Position = gl_ModelViewProjectionMatrix * vertex;
-            float factor = max(1.0/5.0,
-                                   min(1.0, 10.0/(gl_Position.w*gl_Position.w))
-                                   );
-            vec4 color = gl_Color;
-            color.a *= factor;
-            gl_FrontColor = color;
-            gl_FrontColor = color;
-        }
-        """,
-        """
-        #version 120
-        void main() {
-            gl_FragColor = gl_Color;
-        }
-        """)
-        self.vec_local  = glGetUniformLocation(self.program_id, "Xp")
-        self.mat_local  = glGetUniformLocation(self.program_id, "lorentz")
-
+    """
+    This is only used in entity/player.py, to draw windows(?) around each enemy.
+    """
     def __init__(self, color):
         self.color = color
         self.load_program()
+
+    def load_program(self):
+        self.program_id = compile_program(
+            """
+            #version 120
+            uniform vec3 Xp;
+            uniform mat4 lorentz;
+            void main() {
+                vec3 v = gl_Vertex.xyz - Xp;
+                vec4 vertex = lorentz * vec4(v, -length(v));
+                vertex.w = 1.0;
+                gl_Position = gl_ModelViewProjectionMatrix * vertex;
+                float factor = max(1.0/5.0,
+                                   min(1.0, 10.0/(gl_Position.w*gl_Position.w))
+                                   );
+                vec4 color = gl_Color;
+                color.a *= factor;
+                gl_FrontColor = color;
+                gl_FrontColor = color;
+            }
+            """,
+            """
+            #version 120
+            void main() {
+                gl_FragColor = gl_Color;
+            }
+            """)
+        self.vec_local = glGetUniformLocation(self.program_id, "Xp")
+        self.mat_local = glGetUniformLocation(self.program_id, "lorentz")
 
     def draw(self, Xp, L, vertices_1, vertices_2, color=None):
         glUseProgram(self.program_id)

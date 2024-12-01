@@ -1,5 +1,4 @@
-# coding: utf8
-from ..common import Block, color_func, high_func_num
+from ..common import Block, high_func_num
 
 from .backimage import backimage
 from .font import font

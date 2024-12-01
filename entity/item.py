@@ -1,5 +1,3 @@
-# coding: utf8
-# entity/item.py
 from go import Vector4D, Matrix44
 from model.polygon import Polygon
 from program.const import IMG_DIR

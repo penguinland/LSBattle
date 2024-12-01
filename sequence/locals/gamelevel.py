@@ -1,6 +1,5 @@
-#coding: utf8
-# gamelevel.py
 from program import script
+
 
 EASY   = 0
 NORMAL = 1

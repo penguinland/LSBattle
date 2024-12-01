@@ -1,4 +1,3 @@
-#coding: utf8
 import operator
 import re
 
@@ -63,6 +62,7 @@ class Face(object):
         face.make_hash()
         return face, c
 
+
 class Material(object):
     __slots__ = ("color", "tex_name")
     def __init__(self):
@@ -71,6 +71,7 @@ class Material(object):
 
     def __eq__(self, othr):
         return self.color == othr.color and self.tex_name == othr.tex_name
+
 
 class Obj(object):
 
@@ -160,6 +161,7 @@ class Obj(object):
         fact = length / ly
         self.vertex = [[x*fact, (y-min_y)*fact+dy, z*fact]
                         for x,y,z in self.vertex]
+
 
 class MqoObject(object):
 

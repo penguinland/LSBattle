@@ -62,3 +62,6 @@ go/*.c
 *.html
 
 resources/config/*.ini
+
+# Vim swap files
+*.swp

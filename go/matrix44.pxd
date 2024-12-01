@@ -1,5 +1,3 @@
-# coding: utf8
-# go/matrix44.pxd
 from go.vector4D cimport Vector4D
 
 

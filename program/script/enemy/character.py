@@ -1,4 +1,3 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num
 
 
@@ -16,6 +15,7 @@ class think(Block):
         self._far_n_func = self._far_p_func = float
         self._distance0_func = float
         self._distance1_func = float
+
 
 class character(Block):
     def __init__(self):

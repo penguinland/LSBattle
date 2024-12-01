@@ -1,12 +1,11 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
 from program.box import BOX
-from sequence.locals import MenuItems, backimage
+from program.const import *
 from sequence.keyconfig import KeyConfig
+from sequence.locals import MenuItems, backimage
 from sequence.setdisplaysize import SetDisplaySize
 
 

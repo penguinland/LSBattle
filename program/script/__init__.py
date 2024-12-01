@@ -1,4 +1,3 @@
-#coding: utf8
 import os as _os
 import glob as _glob
 import sys as _sys

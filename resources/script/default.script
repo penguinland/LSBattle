@@ -9,7 +9,7 @@ Player {
     turn_acceleration = 9.0              # float -100.0<=x<=100.0
     turn_resistivity = 5.0               # float 0.0<=x<=100.0
     gun_info {
-        format = Weapon: %(NAME)s        # func_str
+        format = Weapon: %(NAME)s        # parse_string
         height = 0.04                    # float
         position_x = 0.68                # float
         position_y = 0.055               # float
@@ -32,7 +32,7 @@ Player {
             }
             div = []                     # eval
             model {
-                name = Hand Gun          # func_str
+                name = Hand Gun          # parse_string
                 rotation_speed = 0.5     # float
                 size = 0.4               # float 0.01<=x<=10.0
                 color = [1.0, 1.0, 1.0, 1.0] # color_func
@@ -54,7 +54,7 @@ Player {
             }
             div = []                     # eval
             model {
-                name = M134              # func_str
+                name = M134              # parse_string
                 rotation_speed = 0.5     # float
                 size = 0.4               # float 0.01<=x<=10.0
                 color = [1.0, 1.0, 1.0, 1.0] # color_func
@@ -76,7 +76,7 @@ Player {
             }
             div = [3]                    # eval
             model {
-                name = chainsaw          # func_str
+                name = chainsaw          # parse_string
                 rotation_speed = 0.5     # float
                 size = 0.4               # float 0.01<=x<=10.0
                 color = [1.0, 1.0, 1.0, 1.0] # color_func
@@ -98,7 +98,7 @@ Player {
             }
             div = [6, 12, 18]            # eval
             model {
-                name = M26A1             # func_str
+                name = M26A1             # parse_string
                 rotation_speed = 0.5     # float
                 size = 0.4               # float 0.01<=x<=10.0
                 color = [1.0, 1.0, 1.0, 1.0] # color_func
@@ -118,7 +118,7 @@ Player {
     window {
         pre_size = 0.025                 # float 0.0001<=x<=0.2
         size = 0.05                      # float 0.0001<=x<=0.2
-        texture = None                   # func_str
+        texture = None                   # parse_string
         texture_dynamic_num = 1          # int
         color = [1.0, 1.0, 1.0, 1.0]     # color_func
         pre_color = [0.5, 0.5, 1.0, 1.0] # color_func
@@ -160,7 +160,7 @@ UI {
     near_clip = 0.1                      # float 1e-05<=x<=100.0
     backimage {
         alpha = 0.5                      # float 0.0<=x<=1.0
-        image = youngEinstein.jpg        # func_str
+        image = youngEinstein.jpg        # parse_string
         image_fill_mode = ALIGN          # _image_fill_mode_func
         color = [0.4, 0.4, 0.4, 1.0]     # color_func
         image_color = [1.0, 1.0, 1.0, 1.0] # color_func
@@ -175,11 +175,11 @@ World {
     sky {
         rotation0 = 90          # float 0.0<=x<=6.28318530718
         rotation1 = 30          # float 0.0<=x<=6.28318530718
-        texture0 = milkyway.jpg          # func_str
-        texture1 = milkyway2.jpg         # func_str
+        texture0 = milkyway.jpg          # parse_string
+        texture1 = milkyway2.jpg         # parse_string
     }
     solar {
-        center = earth                   # func_str
+        center = earth                   # parse_string
         dx = 0.0                         # float
         dy = -0.5                        # float
         dz = -3.0                        # float
@@ -193,35 +193,35 @@ World {
         stars {
             star {
                 hp = 1000                # int 1<=x<=10000000000
-                model = star             # func_str
-                name = Earth             # func_str
+                model = star             # parse_string
+                name = Earth             # parse_string
                 orbital_phi = 0.0        # float -180<=x<=180
                 orbital_radius = 149597870700 # float 0.0<=x<=1e+50
-                primary_star = Sun       # func_str
+                primary_star = Sun       # parse_string
                 sphere_radius = 6378000  # float 0.0<=x<=1e+50
-                texture = earth.jpg      # func_str
+                texture = earth.jpg      # parse_string
                 tilt = 23.4              # float -180<=x<=180
             }
             star {
                 hp = 1000                # int 1<=x<=10000000000
-                model = star             # func_str
-                name = Sun               # func_str
+                model = star             # parse_string
+                name = Sun               # parse_string
                 orbital_phi = 0.0        # float -180<=x<=180
                 orbital_radius = 0       # float 0.0<=x<=1e+50
-                primary_star = None      # func_str
+                primary_star = None      # parse_string
                 sphere_radius = 695500000 # float 0.0<=x<=1e+50
-                texture = sun.gif        # func_str
+                texture = sun.gif        # parse_string
                 tilt = 0.0               # float -180<=x<=180
             }
             star {
                 hp = 1000                # int 1<=x<=10000000000
-                model = star             # func_str
-                name = Moon              # func_str
+                model = star             # parse_string
+                name = Moon              # parse_string
                 orbital_phi = 180.0      # float -180<=x<=180
                 orbital_radius = 384400000 # float 0.0<=x<=1e+50
-                primary_star = Earth     # func_str
+                primary_star = Earth     # parse_string
                 sphere_radius = 1738000  # float 0.0<=x<=1e+50
-                texture = moon.jpg       # func_str
+                texture = moon.jpg       # parse_string
                 tilt = 0.0               # float -180<=x<=180
             }
         }

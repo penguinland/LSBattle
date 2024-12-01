@@ -1,4 +1,3 @@
-#coding: utf8
 from ..common import Block, color_func, high_func_num
 
 
@@ -9,6 +8,7 @@ class wireframe(Block):
         self.div = 30
         self.line_width = 1
         self.inner_div = 5
+
         self._color_func = color_func
         self._size_func = high_func_num(float, 0.0001, 1000)
         self._range_func = high_func_num(float, 1.0, 10000.0)

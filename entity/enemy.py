@@ -1,8 +1,6 @@
-# coding: utf8
-# entity/enemy.py
+from math import sqrt, sin, cos, atan2, pi, isnan
 import os
 from random import random, randint
-from math import sqrt, sin, cos, atan2, pi, isnan
 
 from OpenGL.GL import *
 
@@ -10,11 +8,11 @@ from go import Vector3, Vector4D, Matrix44, Lorentz, Quaternion
 from go import PhaseSpace, WorldLine
 from go import calc_shoot_direction, calc_repulsion
 from entity import SlowBullets
-from model.polygon import Polygon
 from model.flame import Flame
+from model.polygon import Polygon
+from program import script
 from program.const import IMG_DIR
 from program.text import drawSentence3d
-from program import script
 
 
 class EnemyState(object):

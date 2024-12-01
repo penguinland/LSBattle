@@ -1,10 +1,10 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
 from program.box import BOX
 from sequence.locals import MenuItems
+
 
 class Loading(object):
     def __init__(self):

@@ -1,15 +1,15 @@
-#coding: utf8
-import time
 from math import cos
+import time
 
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
 from program.box import BOX
+from program.const import *
 from program.text import Sentence, drawSentence
 from sequence.locals import MenuItems, backimage
+
 
 class Title(object):
     PLAY    = 0

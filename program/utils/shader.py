@@ -1,5 +1,3 @@
-# coding: utf8
-# utils/shader.py
 from OpenGL.GL import *
 
 
@@ -9,6 +7,7 @@ class ProgramInfo(object):
         self.vertex_source = vertex_source
         self.fragment_source = fragment_source
         self.key = key
+
 
 def compile_shader(source, shader_type):
     shader = glCreateShader(shader_type)
@@ -21,6 +20,7 @@ def compile_shader(source, shader_type):
         glDeleteShader(shader)
         raise ValueError("Shader compilation failed: %s"%s)
     return shader
+
 
 _compiled_program = {}
 _using_program_id = {}

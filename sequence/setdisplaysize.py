@@ -1,23 +1,22 @@
-#coding: utf8
 from OpenGL import GL
 import sdl2
 import sdl2.ext
 
-from program.const import *
-from program.box import BOX
-from program.text import MyFont
 from program import script
+from program.box import BOX
+from program.const import *
+from program.text import MyFont
 from sequence.locals import MenuItems, backimage
 
 
 class SetDisplaySize(object):
     def init(self):
-        self.texts = ["%i * %i"%size for size in disp_sizes]
+        self.texts = ["%i * %i"%size for size in DISP_SIZES]
         if not BOX.FULL_SCREEN:
             self.texts.append("Full Screen")
         self.menu = MenuItems(self.texts, BOX.Y/12, ret=True, title="Display Size")
         if not BOX.FULL_SCREEN:
-            self.menu.choice = disp_sizes.index((BOX.X, BOX.Y))
+            self.menu.choice = DISP_SIZES.index((BOX.X, BOX.Y))
 
     def mainloop(self):
         self.init()
@@ -45,7 +44,7 @@ class SetDisplaySize(object):
                         break
 
             if 0 <= choice:
-                if choice < len(disp_sizes):
+                if choice < len(DISP_SIZES):
                     BOX.set_displaysize(choice)
                 elif choice == self.menu.RETURN:
                     return
