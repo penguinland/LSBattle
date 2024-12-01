@@ -92,9 +92,12 @@ class Obj(object):
         self.mirror_axis = None
 
     def __iadd__(self, other):  # Override the `+=` operator
+        # vmap is a map from indices in other.vertex to indices in self.vertex.
+        # We create it when appending vertices from other to self, and then use
+        # it when appending faces from other to self.
         vmap = [0] * len(other.vertex)
-        n = len(self.vertex)
-        vs = []
+        n = len(self.vertex)  # Index of the next vertex to add to self.vertex
+        vs = []  # List of new vertices to add
         for i, v in enumerate(other.vertex):
             try:
                 vmap[i] = self.vertex.index(v)
