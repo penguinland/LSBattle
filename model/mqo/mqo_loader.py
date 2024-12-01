@@ -12,10 +12,12 @@ class Face(object):
         - n, the number of vertices in this face. Must be 3 or 4.
         - indices, the list of indices into some external list of vertices to
           describe the face. Must have length n.
-        - material is a mystery integer
-        - uv is a string depicting a space-separated list of floats, which is
-          unused if material is unused.
-        - color is entirely unused!
+        - material is an index into some external list of materials
+        - uv is a string depicting a space-separated list of floats, which has
+          something to do with the texture of the material (if the material has
+          a texture and isn't just a flat color)
+        - color is entirely unused!? but we keep it because it's part of the MQO
+          standard and we're parsing raw MQO data into here.
         """
         self.n = int(n)
         # According to the MQO 1.0 spec, a face must consist of either 3 or 4
