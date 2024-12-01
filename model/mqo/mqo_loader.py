@@ -3,6 +3,7 @@ import re
 
 
 class Face(object):
+    # __slots__ contains a list of all fields within the class
     __slots__ = ("n", "indices", "material", "uv", "h")
 
     def __init__(self, n=0, indices=None, material=None, uv=None, color=None):
@@ -10,24 +11,30 @@ class Face(object):
         if self.n not in [3, 4]:
             self.n = 0
             return
+
         self.indices = [int(i) for i in indices.split()]
         if len(self.indices) != self.n:
             raise IOError("Face format is clashed")
+
+        # TODO: why do we swap these values?
         self.indices[1], self.indices[-1] = self.indices[-1], self.indices[1]
+
         if material is None:
             self.material = -1
         else:
             self.material = int(material)
+
         if uv is None or self.material == -1:
             self.uv = None
         else:
             self.uv = [float(i) for i in uv.split()]
-            if len(self.uv) != self.n*2:
+            if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
             self.uv[2], self.uv[-2] = self.uv[-2], self.uv[2]
             self.uv[3], self.uv[-1] = self.uv[-1], self.uv[3]
-            for i in range(1, self.n*2, 2):
+            for i in range(1, self.n * 2, 2):
                 self.uv[i] = 1.0 - self.uv[i]
+
         self.make_hash()
 
     def make_hash(self):
@@ -369,7 +376,7 @@ if __name__ == "__main__":
                 raise StopIteration
 
     t1 = time.time()
-    name = "../resources/img/haruna/haruna.mqo"
+    name = "../resources/img/allosaurus/allosaurus.mqo"
     m = MqoObject(F(open(name)))
     t2 = time.time()
     print(t2 - t1)
