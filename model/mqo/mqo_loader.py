@@ -208,6 +208,13 @@ class Obj(object):
                 face.material = get_color_index(self.color)
 
     def normalize(self, length=1.0, dy=-0.5):
+        """
+        Scale all the vertices so that the range of y values is length, and also
+        translate all vertices in the y direction so the smallest value is dy.
+        Using the default argument values, you'll move the vertices so that the
+        range of y values is -0.5 to +0.5, and x and z are scaled
+        proportionately.
+        """
         ys = [y for _, y, _ in self.vertex]
         max_y = max(ys)
         min_y = min(ys)
