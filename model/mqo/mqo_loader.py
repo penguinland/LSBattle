@@ -28,9 +28,6 @@ class Face(object):
         if len(self.indices) != self.n:
             raise IOError("Face format is clashed")
 
-        # TODO: why do we swap these values?
-        self.indices[1], self.indices[-1] = self.indices[-1], self.indices[1]
-
         if material is None:
             self.material = -1
         else:
@@ -42,8 +39,6 @@ class Face(object):
             self.uv = [float(i) for i in uv.split()]
             if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
-            self.uv[2], self.uv[-2] = self.uv[-2], self.uv[2]
-            self.uv[3], self.uv[-1] = self.uv[-1], self.uv[3]
             for i in range(1, self.n * 2, 2):
                 self.uv[i] = 1.0 - self.uv[i]
 
