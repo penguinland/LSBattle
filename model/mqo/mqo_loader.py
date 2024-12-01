@@ -167,11 +167,12 @@ class Obj(object):
                 mi = mmap[face.material]
                 face.material = mi
                 if not materials[mi].tex_name:
-                    # マテリアルにテクスチャが設定されていない -> 面のUV座標を消す
+                    # No texture is set in the material -> Erase the UV
+                    # coordinates of the face
                     face.uv = None
                 elif face.uv is None:
-                    # マテリアルにテクスチャが設定されているのに面にUV座標がない
-                    # -> 新規に色のみのマテリアルを割り当てる
+                    # The material has a texture but the faces have no UV
+                    # coordinates -> assign a new material with only color
                     m = Material()
                     m.color = materials[mi].color
                     try:
@@ -180,7 +181,8 @@ class Obj(object):
                         face.material = len(materials)
                         materials.append(m)
             else:
-                # マテリアル無しはオブジェクトの色でマテリアルを新規作成
+                # If there is no material, create a new material with the
+                # object's color.
                 face.uv = None
                 m = Material()
                 m.color = self.color
