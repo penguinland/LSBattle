@@ -50,7 +50,7 @@ class Face(object):
     def __eq__(self, other):
         return self.h == other.h and self.indices == other.indices
 
-    def mirror_copy(self, vertex, xi):
+    def create_mirror(self, vertex, xi):
         """
         vertex is a list of vertices.
         xi is a list of 3 numbers, each of which is either 1 or -1, indicating
@@ -152,7 +152,7 @@ class Obj(object):
         xi = [x, y, z]
         fs = []
         for f in self.faces:
-            ff, c = f.mirror_copy(self.vertex, xi)
+            ff, c = f.create_mirror(self.vertex, xi)
             fs.append(ff)
         self.faces.extend(fs)
         self.mirror = None
