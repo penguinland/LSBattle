@@ -47,7 +47,7 @@ def mqo2gpo(name):
 
     def _uv(i):
         index = face.indices[i]
-        p = Point(mqo.obj.vertex[index], face.uv[i*2:i*2+2])
+        p = Point(mqo.obj.vertices[index], face.uv[i*2:i*2+2])
         if points[index] is None or points[index].texcoord is None:
             points[index] = p
         elif p.texcoord != points[index].texcoord:
@@ -61,12 +61,12 @@ def mqo2gpo(name):
         return index
     def _col(i):
         index = face.indices[i]
-        p = Point(mqo.obj.vertex[index])
+        p = Point(mqo.obj.vertices[index])
         if points[index] is None:
             points[index] = p
         return index
 
-    pre_len = len(mqo.obj.vertex)
+    pre_len = len(mqo.obj.vertices)
     points = [None]*pre_len
     objects = []
     for num, face in enumerate(mqo.obj.faces):
