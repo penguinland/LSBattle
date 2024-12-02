@@ -227,8 +227,8 @@ class Obj(object):
 
 
 class MqoObject(object):
-    re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
-    re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
+    _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
+    _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
     # TODO: this regex can't possibly be right.
     # Comments:
     # 1 Number of vertices
@@ -236,13 +236,13 @@ class MqoObject(object):
     # 3 Material index
     # 4 UV value
     # 5 Vertex color
-    re_face   = re.compile(r"""
-                           ^(\w+)\s*              #1 頂点数
-                           V\(([^)]*)\)\s*        #2 頂点インデックス
-                           (?:M\(([^)]*)\))?\s*   #3 材質インデックス
-                           (?:UV\(([^)]*)\))?\s*  #4 UV値
-                           (?:COL\(([^)]*)\))?\s* #5 頂点カラー
-                           """, re.VERBOSE)
+    _re_face   = re.compile(r"""
+                            ^(\w+)\s*              #1 頂点数
+                            V\(([^)]*)\)\s*        #2 頂点インデックス
+                            (?:M\(([^)]*)\))?\s*   #3 材質インデックス
+                            (?:UV\(([^)]*)\))?\s*  #4 UV値
+                            (?:COL\(([^)]*)\))?\s* #5 頂点カラー
+                            """, re.VERBOSE)
 
     def __init__(self, imqo):
         """
@@ -311,12 +311,18 @@ class MqoObject(object):
             raise IOError("This file does not look like a Metasequoia document")
 
     def _search_chunk(self, imqo):
+        """
+        We expect imqo to be an open file handle to the middle of a Metasequoia
+        document. We consume lines until the next time we find what looks like
+        the beginning of either a chunk or an object, and then return the name
+        of the thing we found.
+        """
         while True:
             line = next(imqo).strip()
-            m = self.re_chunk.match(line)
+            m = self._re_chunk.match(line)
             if m:
                 return m.group(1)
-            m = self.re_object.match(line)
+            m = self._re_object.match(line)
             if m:
                 return "object"
 
@@ -355,7 +361,7 @@ class MqoObject(object):
             line = next(imqo).strip()
             if line == "}":
                 break
-            m = self.re_chunk.match(line)
+            m = self._re_chunk.match(line)
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
@@ -414,7 +420,7 @@ class MqoObject(object):
             line = next(imqo).strip()
             if line == "}":
                 break
-            m = self.re_face.match(line)
+            m = self._re_face.match(line)
             face = Face(*m.groups())
             if face.n != 0 and face not in faces:
                 faces.append(face)
@@ -425,7 +431,7 @@ class MqoObject(object):
             line = next(imqo).strip()
             if line == "}":
                 break
-            if self.re_chunk.match(line):
+            if self._re_chunk.match(line):
                 self._skip_chunk(imqo)
 
 
