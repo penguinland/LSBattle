@@ -234,19 +234,14 @@ class MqoObject(object):
     """
     _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")      # e.g., 'Material 3 {'
     _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')  # e.g., 'Object "a" {'
-    # TODO: this regex can't possibly be right.
-    # Comments:
-    # 1 Number of vertices
-    # 2 Vertex index
-    # 3 Material index
-    # 4 UV value
-    # 5 Vertex color
+    # The use of re.VERBOSE means "ignore whitespace, newlines, and anything
+    # after a comment delimiter in the regex."
     _re_face   = re.compile(r"""
-                            ^(\w+)\s*              #1 頂点数
-                            V\(([^)]*)\)\s*        #2 頂点インデックス
-                            (?:M\(([^)]*)\))?\s*   #3 材質インデックス
-                            (?:UV\(([^)]*)\))?\s*  #4 UV値
-                            (?:COL\(([^)]*)\))?\s* #5 頂点カラー
+                            ^(\w+)\s*              #1 number of vertices
+                            V\(([^)]*)\)\s*        #2 vertex index
+                            (?:M\(([^)]*)\))?\s*   #3 material index
+                            (?:UV\(([^)]*)\))?\s*  #4 UV value
+                            (?:COL\(([^)]*)\))?\s* #5 vertex color
                             """, re.VERBOSE)
 
     def __init__(self, imqo):
@@ -335,9 +330,9 @@ class MqoObject(object):
         re_comp = re.compile(r"""
                              \s+
                              (?=
-                                 \w+ # パラメータ
+                                 \w+       # Parameter
                                  \(
-                                     [^)]* # 値
+                                     [^)]* # Value
                                  \)
                              )
                              """, re.VERBOSE)
