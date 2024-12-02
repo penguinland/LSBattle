@@ -236,15 +236,6 @@ class MqoObject(object):
     """
     _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")      # e.g., 'Material 3 {'
     _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')  # e.g., 'Object "a" {'
-    # The use of re.VERBOSE means "ignore whitespace, newlines, and anything
-    # after a comment delimiter in the regex."
-    _re_face   = re.compile(r"""
-                            ^(\w+)\s*              #1 number of vertices
-                            V\(([^)]*)\)\s*        #2 vertex index
-                            (?:M\(([^)]*)\))?\s*   #3 material index
-                            (?:UV\(([^)]*)\))?\s*  #4 UV value
-                            (?:COL\(([^)]*)\))?\s* #5 vertex color
-                            """, re.VERBOSE)
 
     def __init__(self, imqo):
         """
@@ -435,11 +426,20 @@ class MqoObject(object):
 
     def _face_chunk(self, imqo):
         faces = []
+        # The use of re.VERBOSE means "ignore whitespace, newlines, and anything
+        # after a comment delimiter in the regex."
+        re_face   = re.compile(r"""
+                               ^(\w+)\s*              #1 number of vertices
+                               V\(([^)]*)\)\s*        #2 vertex index
+                               (?:M\(([^)]*)\))?\s*   #3 material index
+                               (?:UV\(([^)]*)\))?\s*  #4 UV value
+                               (?:COL\(([^)]*)\))?\s* #5 vertex color
+                               """, re.VERBOSE)
         while True:
             line = next(imqo).strip()
             if line == "}":
                 break
-            m = self._re_face.match(line)
+            m = re_face.match(line)
             face = Face(*m.groups())
             if face.n != 0 and face not in faces:
                 faces.append(face)
