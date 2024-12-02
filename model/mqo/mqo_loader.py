@@ -41,6 +41,9 @@ class Face(object):
             self.uv = [float(i) for i in uv.split()]
             if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
+            # TODO: what's the point of this!? Does it have to do with mirroring
+            # the texture? We used to mirror the entire face as we loaded it,
+            # but that got removed; maybe this needs to be removed to match...
             for i in range(1, self.n * 2, 2):
                 self.uv[i] = 1.0 - self.uv[i]
 
@@ -52,14 +55,14 @@ class Face(object):
     def __eq__(self, other):
         return self.h == other.h and self.indices == other.indices
 
-    def create_mirror(self, vertex, xi):
+    def create_mirror(self, vertices, xi):
         """
-        vertex is a list of vertices.
+        vertices is a list of vertices, which correspond to self.indices.
         xi is a list of 3 numbers, each of which is either 1 or -1, indicating
         whether to mirror along the x, y, and/or z axes.
 
         We return a new face formed by mirroring self along the axes indicated
-        by xi, after appending any new vertices needed to vertex.
+        by xi, after appending any new vertices needed.
         """
         face = Face()
         face.n = self.n
@@ -82,12 +85,12 @@ class Face(object):
         face.indices = []
         c = 0
         for i in it:
-            v = list(map(operator.mul, xi, vertex[self.indices[i]]))
+            v = list(map(operator.mul, xi, vertices[self.indices[i]]))
             try:
-                index = vertex.index(v)
+                index = vertices.index(v)
             except ValueError:
-                index = len(vertex)
-                vertex.append(v)
+                index = len(vertices)
+                vertices.append(v)
                 c += 1
             face.indices.append(index)
         face.make_hash()
@@ -110,7 +113,7 @@ class Material(object):
 
 class Obj(object):
     def __init__(self):
-        self.vertex = []
+        self.vertices = []
         self.faces  = []
         self.mirror = None
         self.mirror_axis = None
@@ -123,18 +126,19 @@ class Obj(object):
         faces! It's possible that the other Obj we're appending will contain
         invalid state after this function returns.
         """
-        # vmap is a map from indices in other.vertex to indices in self.vertex.
+        # vmap is a map from indices in other.vertices to indices in
+        # self.vertices.
         # We create it when appending vertices from other to self, and then use
         # it when appending faces from other to self.
-        vmap = [0] * len(other.vertex)
-        n = len(self.vertex)  # Index of the next vertex to add to self.vertex
-        for i, v in enumerate(other.vertex):
+        vmap = [0] * len(other.vertices)
+        n = len(self.vertices)  # Index of the next vertex to add
+        for i, v in enumerate(other.vertices):
             try:
-                vmap[i] = self.vertex.index(v)
+                vmap[i] = self.vertices.index(v)
             except ValueError:
                 vmap[i] = n
                 n += 1
-                self.vertex.append(v)
+                self.vertices.append(v)
 
         for face in other.faces:
             face.indices = [vmap[i] for i in face.indices]
@@ -159,11 +163,12 @@ class Obj(object):
         if self.mirror_axis & 2: y = -1.0
         if self.mirror_axis & 4: z = -1.0
         xi = [x, y, z]
-        mirrored_faces = [f.create_mirror(self.vertex, xi) for f in self.faces]
+        mirrored_faces = [f.create_mirror(self.vertices, xi)
+                          for f in self.faces]
         self.faces.extend(mirrored_faces)
         self.mirror = None
 
-    def check_material_uv(self, materials, mmap):
+    def check_material_uv(self, materials, material_map):
         """
         For each face in the object, ensure that it has a compatible material:
         - if the face's material has no texture, erase the face's uv values
@@ -173,9 +178,10 @@ class Obj(object):
         materials is a list of materials, which might be mutated if we need to
         add new materials to it.
 
-        mmap (which needs to be renamed!) is a mapping from the indices used in
-        our faces to the indices of the materials list.
-        TODO: explain why this exists
+        material_map is a mapping from the indices used in our faces to the
+        indices of the materials list (necessary because the materials list
+        passed in here has duplicates removed, but the indices the faces use
+        were created while there might have been duplicate materials).
         """
         def get_color_index(color):
             # If the color is not in the materials list yet, insert it and then
@@ -190,7 +196,7 @@ class Obj(object):
 
         for face in self.faces:
             if face.material >= 0:
-                mi = mmap[face.material]
+                mi = material_map[face.material]
                 face.material = mi
                 if not materials[mi].tex_name:
                     # No texture is set in the material, so erase the UV
@@ -215,76 +221,82 @@ class Obj(object):
         range of y values is -0.5 to +0.5, and x and z are scaled
         proportionately.
         """
-        ys = [y for _, y, _ in self.vertex]
+        ys = [y for _, y, _ in self.vertices]
         max_y = max(ys)
         min_y = min(ys)
         ly = max_y - min_y
         factor = length / ly
-        self.vertex = [[x * factor, (y - min_y) * factor + dy, z * factor]
-                        for x, y, z in self.vertex]
+        self.vertices = [[x * factor, (y - min_y) * factor + dy, z * factor]
+                         for x, y, z in self.vertices]
 
 
 class MqoObject(object):
-    re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
-    re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
-    re_face   = re.compile(r"""
-                           ^(\w+)\s*              #1 頂点数
-                           V\(([^)]*)\)\s*        #2 頂点インデックス
-                           (?:M\(([^)]*)\))?\s*   #3 材質インデックス
-                           (?:UV\(([^)]*)\))?\s*  #4 UV値
-                           (?:COL\(([^)]*)\))?\s* #5 頂点カラー
-                           """, re.VERBOSE)
+    """
+    This class is a way to take an open file handle pointing at a Metasequoia
+    document, and constructing an Obj and a Material list from it, both of which
+    should be considered public fields.
+    """
+    _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")      # e.g., 'Material 3 {'
+    _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')  # e.g., 'Object "a" {'
 
-    def __init__(self, imqo):
-        self.imqo = imqo
-        self.check_header()
+    def __init__(self, handle):
+        """
+        We take an open file handle that contains an MQO (Metasequoia) document
+        """
+        self._check_header(handle)
         self.obj = Obj()
         materials = []
         try:
             while True:
-                chunk = self.search_chunk().lower()
-                if chunk == "object": # 複数あり
-                    obj = self.object_chunk()
+                chunk = self._search_chunk(handle).lower()
+                if chunk == "object": # There might be many objects...
+                    obj = self._object_chunk(handle)
                     obj.expand_mirror()
                     self.obj += obj
-                elif chunk == "material": # 1回
-                    materials = self.material_chunk()
+                elif chunk == "material": # ...but only 1 material chunk.
+                    materials = self._material_chunk(handle)
                 else:
-                    self.skip_chunk()
-        except StopIteration:
+                    self._skip_chunk(handle)
+        except StopIteration:  # handle hit the end of the file
             pass
         if not materials:
             raise IOError("Material-Chunk is essential")
 
+        # We will now remove duplicate materials, so that self.materials is a
+        # list of unique materials, and material_map is a list containing the
+        # indices in self.materials for each original material.
         self.materials = []
-        mmap = [0]*len(materials)
+        material_map = [0]*len(materials)
         for i, m in enumerate(materials):
             try:
                 index = self.materials.index(m)
             except ValueError:
                 index = len(self.materials)
                 self.materials.append(m)
-            mmap[i] = index
-        self.obj.check_material_uv(self.materials, mmap)
+            material_map[i] = index
+        self.obj.check_material_uv(self.materials, material_map)
         self.obj.normalize()
 
+        # Sort the faces within the Obj so that the ones with the earliest
+        # materials come first, and the ones with complex textures come last.
+        # TODO: explain *why* we sort the faces.
         def key(face):
-            if face.uv is None:
-                s = 1000000
-            else:
-                s = 0
-            s += face.material
-            return s
+            return face.material + (1000000 if face.uv is None else 0)
         self.obj.faces.sort(key=key)
 
     ###### read tool ######
 
-    def check_header(self):
-        firstline = next(self.imqo)
+    def _check_header(self, handle):
+        """
+        We take in an open file handle containing a Metasequoia document. We
+        consume the first two lines of the file, and throw exceptions if they
+        look unexpected.
+        """
+        firstline = next(handle)
         if "Metasequoia Document" not in firstline:
             raise IOError("This file is not Metasequoia Document")
 
-        line = next(self.imqo)
+        line = next(handle)
         m = re.match(r"^Format (\w+) Ver (\d+)\.(\d+)", line)
         if m:
             if m.group(1) != "Text":
@@ -292,33 +304,52 @@ class MqoObject(object):
             if m.group(2) != "1":
                 raise IOError("This file version is not supported")
         else:
-            raise IOError("This file format is not supported")
+            raise IOError("This file does not look like a Metasequoia document")
 
-    def search_chunk(self):
+    def _search_chunk(self, handle):
+        """
+        We take in an open file handle to the middle of a Metasequoia document.
+        We consume lines until the next time we find what looks like the
+        beginning of either a chunk or an object, and then return the name of
+        the thing we found.
+        """
         while True:
-            line = next(self.imqo).strip()
-            m = self.re_chunk.match(line)
+            line = next(handle).strip()
+            m = self._re_chunk.match(line)
             if m:
                 return m.group(1)
-            m = self.re_object.match(line)
+            m = self._re_object.match(line)
             if m:
                 return "object"
 
-    def material_chunk(self):
+    def _material_chunk(self, handle):
+        """
+        We take in an open file handle into the middle of a Metasequoia
+        document, pointing to the line just after the Material block was opened.
+        We consume lines until we hit the end of the block, and return a list of
+        all materials found.
+
+        A material line consists of the name in quote marks, and then a bunch of
+        fields (consisting of the name of the field and then its value in
+        parentheses), all on a single line. We ignore the name and all fields
+        except the "col" (color) and "tex" (texture) ones.
+        """
+        # TODO: write some tests, then simplify this
         re_comp = re.compile(r"""
-                             \s+
-                             (?=
-                                 \w+ # パラメータ
-                                 \(
-                                     [^)]* # 値
-                                 \)
+                             \s+           # Whitespace
+                             (?=           # Zero-width lookahead
+                                 \w+       # Parameter
+                                 \(        # Literal open-parenthesis
+                                     [^)]* # Value
+                                 \)        # Literal close-parenthesis
                              )
                              """, re.VERBOSE)
         re_field = re.compile(r"^(\w+)\(([^)]*)\)")
         materials = []
         while True:
-            line = next(self.imqo).strip()
-            if line == "}":break
+            line = next(handle).strip()
+            if line == "}":
+                break
             material = Material()
             fields = re_comp.split(line)
             for field in fields:
@@ -331,21 +362,22 @@ class MqoObject(object):
             materials.append(material)
         return materials
 
-    def object_chunk(self):
+    def _object_chunk(self, handle):
         obj = Obj()
-        vertex = []
+        vertices = []
         while True:
-            line = next(self.imqo).strip()
-            if line == "}":break
-            m = self.re_chunk.match(line)
+            line = next(handle).strip()
+            if line == "}":
+                break
+            m = self._re_chunk.match(line)
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertex = self.vertex_chunk()
+                    vertices = self._vertex_chunk(handle)
                 elif chunk == "face":
-                    obj.faces = self.face_chunk()
+                    obj.faces = self._face_chunk(handle)
                 else:
-                    self.skip_chunk()
+                    self._skip_chunk(handle)
             else:
                 fields = line.split()
                 name = fields[0]
@@ -368,44 +400,76 @@ class MqoObject(object):
                     if obj.translation != [.0,.0,.0]:
                         print("t",obj.translation)
 
-        vmap = [0]*len(vertex)
-        for i, v in enumerate(vertex):
+        vmap = [0]*len(vertices)
+        for i, v in enumerate(vertices):
             try:
-                vmap[i] = obj.vertex.index(v)
+                vmap[i] = obj.vertices.index(v)
             except ValueError:
-                vmap[i] = len(obj.vertex)
-                obj.vertex.append(v)
+                vmap[i] = len(obj.vertices)
+                obj.vertices.append(v)
         for face in obj.faces:
             face.indices = [vmap[i] for i in face.indices]
 
         return obj
 
-    def vertex_chunk(self):
-        vertex = []
+    def _vertex_chunk(self, handle):
+        """
+        The vertices are space-separated (x, y, z) tuples, one per line. We
+        parse all of them until we hit the end of the block (with a "}"), and
+        then return a list of them all.
+        """
+        vertices = []
         while True:
-            line = next(self.imqo).strip()
-            if line == "}":break
+            line = next(handle).strip()
+            if line == "}":
+                break
             v = list(map(float, line.split()))
-            vertex.append(v)
-        return vertex
+            vertices.append(v)
+        return vertices
 
-    def face_chunk(self):
+    def _face_chunk(self, handle):
+        """
+        The faces match the regular expression below. We return a list of all
+        parsed faces from this chunk, and advance the file handle to the end
+        of the chunk.
+
+        Example face:
+            3 V(0 1 2) M(5) UV(0 0 1 0 1 1)
+        This is a 3-vertex face (a triangle) using vertices 0, 1, and 2 from the
+        vertex chunk, and material 5 from the material chunk.
+        """
         faces = []
+        # The use of re.VERBOSE means "ignore whitespace, newlines, and anything
+        # after a comment delimiter in the regex."
+        re_face   = re.compile(r"""
+                               ^(\w+)\s*              #1 number of vertices
+                               V\(([^)]*)\)\s*        #2 vertex indices
+                               (?:M\(([^)]*)\))?\s*   #3 material index
+                               (?:UV\(([^)]*)\))?\s*  #4 UV values
+                               (?:COL\(([^)]*)\))?\s* #5 vertex color
+                               """, re.VERBOSE)
         while True:
-            line = next(self.imqo).strip()
-            if line == "}":break
-            m = self.re_face.match(line)
+            line = next(handle).strip()
+            if line == "}":
+                break
+            m = re_face.match(line)
             face = Face(*m.groups())
             if face.n != 0 and face not in faces:
                 faces.append(face)
         return faces
 
-    def skip_chunk(self):
+    def _skip_chunk(self, handle):
+        """
+        We advance the open file handle until the end of the current chunk
+        (delimited with a "}"). If this section opens its own sub-chunk, we skip
+        all of that as well.
+        """
         while True:
-            line = next(self.imqo).strip()
-            if line == "}":break
-            if self.re_chunk.match(line):
-                self.skip_chunk()
+            line = next(handle).strip()
+            if line == "}":
+                break
+            if self._re_chunk.match(line):
+                self._skip_chunk(handle)
 
 
 if __name__ == "__main__":
