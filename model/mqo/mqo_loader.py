@@ -425,6 +425,16 @@ class MqoObject(object):
         return vertices
 
     def _face_chunk(self, imqo):
+        """
+        The faces match the regular expression below. We return a list of all
+        parsed faces from this chunk, and advance the file descriptor to the end
+        of the chunk.
+
+        Example face:
+            3 V(0 1 2) M(5) UV(0 0 1 0 1 1)
+        This is a 3-vertex face (a triangle) using vertices 0, 1, and 2 from the
+        vertex chunk, and material 5 from the material chunk.
+        """
         faces = []
         # The use of re.VERBOSE means "ignore whitespace, newlines, and anything
         # after a comment delimiter in the regex."
