@@ -254,19 +254,22 @@ class MqoObject(object):
         try:
             while True:
                 chunk = self._search_chunk(imqo).lower()
-                if chunk == "object": # 複数あり
+                if chunk == "object": # There might be many objects...
                     obj = self._object_chunk(imqo)
                     obj.expand_mirror()
                     self.obj += obj
-                elif chunk == "material": # 1回
+                elif chunk == "material": # ...but only 1 material chunk.
                     materials = self._material_chunk(imqo)
                 else:
                     self._skip_chunk(imqo)
-        except StopIteration:
+        except StopIteration:  # imqo hit the end of the file
             pass
         if not materials:
             raise IOError("Material-Chunk is essential")
 
+        # We will now remove duplicate materials, so that self.materials is a
+        # list of unique materials, and mmap is a list containing the indices in
+        # self.materials for each original material.
         self.materials = []
         mmap = [0]*len(materials)
         for i, m in enumerate(materials):
@@ -279,6 +282,8 @@ class MqoObject(object):
         self.obj.check_material_uv(self.materials, mmap)
         self.obj.normalize()
 
+        # Sort the faces within the Obj so that the ones with the earliest
+        # materials come first, and the ones with complex textures come last.
         def key(face):
             return face.material + (1000000 if face.uv is None else 0)
         self.obj.faces.sort(key=key)
@@ -286,6 +291,11 @@ class MqoObject(object):
     ###### read tool ######
 
     def _check_header(self, imqo):
+        """
+        We expect imqo to be an open file handle containing a Metasequoia
+        document. We consume the first two lines of the file, and throw
+        exceptions if they look unexpected.
+        """
         firstline = next(imqo)
         if "Metasequoia Document" not in firstline:
             raise IOError("This file is not Metasequoia Document")
@@ -298,7 +308,7 @@ class MqoObject(object):
             if m.group(2) != "1":
                 raise IOError("This file version is not supported")
         else:
-            raise IOError("This file format is not supported")
+            raise IOError("This file does not look like a Metasequoia document")
 
     def _search_chunk(self, imqo):
         while True:
