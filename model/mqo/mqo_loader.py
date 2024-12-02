@@ -279,6 +279,7 @@ class MqoObject(object):
 
         # Sort the faces within the Obj so that the ones with the earliest
         # materials come first, and the ones with complex textures come last.
+        # TODO: explain *why* we sort the faces.
         def key(face):
             return face.material + (1000000 if face.uv is None else 0)
         self.obj.faces.sort(key=key)
