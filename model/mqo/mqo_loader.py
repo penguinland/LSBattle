@@ -419,6 +419,11 @@ class MqoObject(object):
         return obj
 
     def _vertex_chunk(self, imqo):
+        """
+        The vertices are space-separated (x, y, z) tuples, one per line. We
+        parse all of them until we hit the end of the block (with a "}"), and
+        then return a list of them all.
+        """
         vertices = []
         while True:
             line = next(imqo).strip()
@@ -441,6 +446,11 @@ class MqoObject(object):
         return faces
 
     def _skip_chunk(self, imqo):
+        """
+        We advance the open file descriptor until the end of the current chunk
+        (delimited with a "}"). If this section opens its own sub-chunk, we skip
+        all of that as well.
+        """
         while True:
             line = next(imqo).strip()
             if line == "}":
