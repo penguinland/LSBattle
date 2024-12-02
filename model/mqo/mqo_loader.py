@@ -327,13 +327,25 @@ class MqoObject(object):
                 return "object"
 
     def _material_chunk(self, imqo):
+        """
+        imqo should be an open file handle into the middle of a Metasequoia
+        document, pointing to the line just after the Material block was opened.
+        We consume lines until we hit the end of the block, and return a list of
+        all materials found.
+
+        A material line consists of the name in quote marks, and then a bunch of
+        fields (consisting of the name of the field and then its value in
+        parentheses), all on a single line. We ignore the name and all fields
+        except the "col" (color) and "tex" (texture) ones.
+        """
+        # TODO: write some tests, then simplify this
         re_comp = re.compile(r"""
-                             \s+
-                             (?=
+                             \s+           # Whitespace
+                             (?=           # Zero-width lookahead
                                  \w+       # Parameter
-                                 \(
+                                 \(        # Literal open-parenthesis
                                      [^)]* # Value
-                                 \)
+                                 \)        # Literal close-parenthesis
                              )
                              """, re.VERBOSE)
         re_field = re.compile(r"^(\w+)\(([^)]*)\)")
