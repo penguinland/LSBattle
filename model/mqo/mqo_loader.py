@@ -430,9 +430,9 @@ class MqoObject(object):
         # after a comment delimiter in the regex."
         re_face   = re.compile(r"""
                                ^(\w+)\s*              #1 number of vertices
-                               V\(([^)]*)\)\s*        #2 vertex index
+                               V\(([^)]*)\)\s*        #2 vertex indices
                                (?:M\(([^)]*)\))?\s*   #3 material index
-                               (?:UV\(([^)]*)\))?\s*  #4 UV value
+                               (?:UV\(([^)]*)\))?\s*  #4 UV values
                                (?:COL\(([^)]*)\))?\s* #5 vertex color
                                """, re.VERBOSE)
         while True:
