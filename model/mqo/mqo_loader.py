@@ -167,7 +167,7 @@ class Obj(object):
         self.faces.extend(mirrored_faces)
         self.mirror = None
 
-    def check_material_uv(self, materials, mmap):
+    def check_material_uv(self, materials, material_map):
         """
         For each face in the object, ensure that it has a compatible material:
         - if the face's material has no texture, erase the face's uv values
@@ -177,9 +177,10 @@ class Obj(object):
         materials is a list of materials, which might be mutated if we need to
         add new materials to it.
 
-        mmap (which needs to be renamed!) is a mapping from the indices used in
-        our faces to the indices of the materials list.
-        TODO: explain why this exists
+        material_map is a mapping from the indices used in our faces to the
+        indices of the materials list (necessary because the materials list
+        passed in here has duplicates removed, but the indices the faces use
+        were created while there might have been duplicate materials).
         """
         def get_color_index(color):
             # If the color is not in the materials list yet, insert it and then
@@ -194,7 +195,7 @@ class Obj(object):
 
         for face in self.faces:
             if face.material >= 0:
-                mi = mmap[face.material]
+                mi = material_map[face.material]
                 face.material = mi
                 if not materials[mi].tex_name:
                     # No texture is set in the material, so erase the UV
@@ -261,18 +262,18 @@ class MqoObject(object):
             raise IOError("Material-Chunk is essential")
 
         # We will now remove duplicate materials, so that self.materials is a
-        # list of unique materials, and mmap is a list containing the indices in
-        # self.materials for each original material.
+        # list of unique materials, and material_map is a list containing the
+        # indices in self.materials for each original material.
         self.materials = []
-        mmap = [0]*len(materials)
+        material_map = [0]*len(materials)
         for i, m in enumerate(materials):
             try:
                 index = self.materials.index(m)
             except ValueError:
                 index = len(self.materials)
                 self.materials.append(m)
-            mmap[i] = index
-        self.obj.check_material_uv(self.materials, mmap)
+            material_map[i] = index
+        self.obj.check_material_uv(self.materials, material_map)
         self.obj.normalize()
 
         # Sort the faces within the Obj so that the ones with the earliest
