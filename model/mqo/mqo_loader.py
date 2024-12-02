@@ -239,25 +239,25 @@ class MqoObject(object):
     _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")      # e.g., 'Material 3 {'
     _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')  # e.g., 'Object "a" {'
 
-    def __init__(self, imqo):
+    def __init__(self, handle):
         """
-        imqo is an open file handle that contains an MQO (Metasequoia) document
+        We take an open file handle that contains an MQO (Metasequoia) document
         """
-        self._check_header(imqo)
+        self._check_header(handle)
         self.obj = Obj()
         materials = []
         try:
             while True:
-                chunk = self._search_chunk(imqo).lower()
+                chunk = self._search_chunk(handle).lower()
                 if chunk == "object": # There might be many objects...
-                    obj = self._object_chunk(imqo)
+                    obj = self._object_chunk(handle)
                     obj.expand_mirror()
                     self.obj += obj
                 elif chunk == "material": # ...but only 1 material chunk.
-                    materials = self._material_chunk(imqo)
+                    materials = self._material_chunk(handle)
                 else:
-                    self._skip_chunk(imqo)
-        except StopIteration:  # imqo hit the end of the file
+                    self._skip_chunk(handle)
+        except StopIteration:  # handle hit the end of the file
             pass
         if not materials:
             raise IOError("Material-Chunk is essential")
@@ -286,17 +286,17 @@ class MqoObject(object):
 
     ###### read tool ######
 
-    def _check_header(self, imqo):
+    def _check_header(self, handle):
         """
-        We expect imqo to be an open file handle containing a Metasequoia
-        document. We consume the first two lines of the file, and throw
-        exceptions if they look unexpected.
+        We take in an open file handle containing a Metasequoia document. We
+        consume the first two lines of the file, and throw exceptions if they
+        look unexpected.
         """
-        firstline = next(imqo)
+        firstline = next(handle)
         if "Metasequoia Document" not in firstline:
             raise IOError("This file is not Metasequoia Document")
 
-        line = next(imqo)
+        line = next(handle)
         m = re.match(r"^Format (\w+) Ver (\d+)\.(\d+)", line)
         if m:
             if m.group(1) != "Text":
@@ -306,15 +306,15 @@ class MqoObject(object):
         else:
             raise IOError("This file does not look like a Metasequoia document")
 
-    def _search_chunk(self, imqo):
+    def _search_chunk(self, handle):
         """
-        We expect imqo to be an open file handle to the middle of a Metasequoia
-        document. We consume lines until the next time we find what looks like
-        the beginning of either a chunk or an object, and then return the name
-        of the thing we found.
+        We take in an open file handle to the middle of a Metasequoia document.
+        We consume lines until the next time we find what looks like the
+        beginning of either a chunk or an object, and then return the name of
+        the thing we found.
         """
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             m = self._re_chunk.match(line)
             if m:
                 return m.group(1)
@@ -322,9 +322,9 @@ class MqoObject(object):
             if m:
                 return "object"
 
-    def _material_chunk(self, imqo):
+    def _material_chunk(self, handle):
         """
-        imqo should be an open file handle into the middle of a Metasequoia
+        We take in an open file handle into the middle of a Metasequoia
         document, pointing to the line just after the Material block was opened.
         We consume lines until we hit the end of the block, and return a list of
         all materials found.
@@ -347,7 +347,7 @@ class MqoObject(object):
         re_field = re.compile(r"^(\w+)\(([^)]*)\)")
         materials = []
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             if line == "}":
                 break
             material = Material()
@@ -362,22 +362,22 @@ class MqoObject(object):
             materials.append(material)
         return materials
 
-    def _object_chunk(self, imqo):
+    def _object_chunk(self, handle):
         obj = Obj()
         vertices = []
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             if line == "}":
                 break
             m = self._re_chunk.match(line)
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertices = self._vertex_chunk(imqo)
+                    vertices = self._vertex_chunk(handle)
                 elif chunk == "face":
-                    obj.faces = self._face_chunk(imqo)
+                    obj.faces = self._face_chunk(handle)
                 else:
-                    self._skip_chunk(imqo)
+                    self._skip_chunk(handle)
             else:
                 fields = line.split()
                 name = fields[0]
@@ -412,7 +412,7 @@ class MqoObject(object):
 
         return obj
 
-    def _vertex_chunk(self, imqo):
+    def _vertex_chunk(self, handle):
         """
         The vertices are space-separated (x, y, z) tuples, one per line. We
         parse all of them until we hit the end of the block (with a "}"), and
@@ -420,17 +420,17 @@ class MqoObject(object):
         """
         vertices = []
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             if line == "}":
                 break
             v = list(map(float, line.split()))
             vertices.append(v)
         return vertices
 
-    def _face_chunk(self, imqo):
+    def _face_chunk(self, handle):
         """
         The faces match the regular expression below. We return a list of all
-        parsed faces from this chunk, and advance the file descriptor to the end
+        parsed faces from this chunk, and advance the file handle to the end
         of the chunk.
 
         Example face:
@@ -449,7 +449,7 @@ class MqoObject(object):
                                (?:COL\(([^)]*)\))?\s* #5 vertex color
                                """, re.VERBOSE)
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             if line == "}":
                 break
             m = re_face.match(line)
@@ -458,18 +458,18 @@ class MqoObject(object):
                 faces.append(face)
         return faces
 
-    def _skip_chunk(self, imqo):
+    def _skip_chunk(self, handle):
         """
-        We advance the open file descriptor until the end of the current chunk
+        We advance the open file handle until the end of the current chunk
         (delimited with a "}"). If this section opens its own sub-chunk, we skip
         all of that as well.
         """
         while True:
-            line = next(imqo).strip()
+            line = next(handle).strip()
             if line == "}":
                 break
             if self._re_chunk.match(line):
-                self._skip_chunk(imqo)
+                self._skip_chunk(handle)
 
 
 if __name__ == "__main__":
