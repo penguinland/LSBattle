@@ -14,7 +14,7 @@ Material 2 {
 	"mat3" shader(3) col(1.000 1.000 1.000 1.000) dif(1.000) amb(0.500) emi(0.510) spc(0.000) power(5.00) tex("Griffin.png")
 	"mat1" shader(3) col(1.000 1.000 1.000 1.000) dif(0.630) amb(0.470) emi(0.220) spc(0.000) power(5.00) tex("Griffin.png")
 }
-Object "ëÃ" {
+Object "I" {
 	depth 0
 	folding 0
 	scale 1.000000 1.000000 1.000000
@@ -1408,7 +1408,7 @@ Object "ëÃ" {
 		4 V(666 667 668 669) M(0) UV(0.52258 0.21638 0.28625 0.21607 0.28647 0.40188 0.52463 0.40260)
 	}
 }
-Object "óÉ" {
+Object "9783" {
 	depth 0
 	folding 0
 	scale 1.000000 1.000000 1.000000
@@ -1488,7 +1488,7 @@ Object "óÉ" {
 		4 V(40 41 42 43) M(0) UV(0.52258 0.21638 0.28625 0.21607 0.28647 0.40188 0.52463 0.40260)
 	}
 }
-Object "çú" {
+Object "8d9c" {
 	depth 0
 	folding 0
 	scale 1.000000 1.000000 1.000000
