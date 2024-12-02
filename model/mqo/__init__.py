@@ -8,6 +8,7 @@ The format for our models is roughly this:
 - two lines of boilerplate at the top, saying that this is a Metasequoia
   document of a specific format and version
 - a single material chunk, and then an arbitrary number of object chunks.
+- (there can be other chunks, too, but we ignore them)
 
 A chunk has a line describing what's going to come, ending with a "{", then a
 bunch of lines in the body, followed by a line with a "}".
