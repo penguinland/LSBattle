@@ -227,8 +227,13 @@ class Obj(object):
 
 
 class MqoObject(object):
-    _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")
-    _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')
+    """
+    This class is a way to take an open file handle pointing at a Metasequoia
+    document, and constructing an Obj and a Material list from it, both of which
+    should be considered public fields.
+    """
+    _re_chunk  = re.compile(r"^(\w+)\s*(\d+)?\s*{")      # e.g., 'Material 3 {'
+    _re_object = re.compile(r'^Object\s*"([^"]+)"\s+{')  # e.g., 'Object "a" {'
     # TODO: this regex can't possibly be right.
     # Comments:
     # 1 Number of vertices
