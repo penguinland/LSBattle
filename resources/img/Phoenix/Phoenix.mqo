@@ -20,7 +20,7 @@ Scene {
 Material 16 {
 	"a" shader(3) col(0.000 0.667 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
 	"b" shader(3) col(0.000 0.502 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
-	"çc" shader(3) col(0.000 0.333 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
+	"c" shader(3) col(0.000 0.333 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
 	"d" shader(3) col(0.000 0.165 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
 	"e" shader(3) col(0.000 0.000 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
 	"f" shader(3) col(0.169 0.000 1.000 0.400) dif(1.000) amb(0.600) emi(0.250) spc(0.000) power(5.00)
