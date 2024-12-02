@@ -13,25 +13,26 @@ The format for our models is roughly this:
 A chunk has a line describing what's going to come, ending with a "{", then a
 bunch of lines in the body, followed by a line with a "}".
 - The material chunk starts with the word "Material" and the number of lines
-  with in it.
+  within it.
 - An object chunk starts with the word "Object" and the name of the object
   surrounded by double-quotes.
-- Within an object, there is a vertex chunk that starts with "vertex" and the
+- Within an object, there is a vertices chunk that starts with "vertex" and the
   number of lines within it.
 - Within an object, there is also a faces chunk that starts with "face" and
   the number of lines within it.
 
-A line within the material chunk contains:
-- the name of the material (seemingly unused: we go by its index instead)
+Each line within the material chunk contains:
+- the name of the material (seemingly unused: we use its index instead)
 - a bunch of fields of the format `name(value)`. We care about only:
-  - the "col" field (describing a color: four space-separated floats between 0 and 1 indicating red, green, blue, and opacity levels)
-  - the "tex" field (describing a texture, which I suspect is an image file in
-    the same directory).
+  - the "col" field, describing a color: four space-separated floats between 0
+    and 1 indicating red, green, blue, and opacity levels
+  - the "tex" field, describing a texture (which I suspect is an image file in
+    the same directory)
 
-Within an object chunk, there are:
-- the vertex chunk, which contains a bunch of space-separated floats
+Each object chunk contains:
+- the vertex chunk, each line of which contains a three space-separated floats
   representing (x, y, z) coordinates
-- the face chunk, which contains:
+- the face chunk, each line of which contains:
   - the number of vertices in the face (3 for a triangle, 4 for a quadrilateral)
   - the "V" field, which contains a space-separated list of the indices into the
     vertex chunk for the vertices of the face (length should match the
