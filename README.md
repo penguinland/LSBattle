@@ -9,8 +9,6 @@ This is a FPS game where you can experience special relativity.
 
 ## Usage
 
-How to build
-
 1. I don't have a Mac, but the original instructions involved installing extra things on it:
     ```
     brew install glfw
