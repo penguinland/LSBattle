@@ -9,7 +9,9 @@ This is a FPS game where you can experience special relativity.
 
 ## Usage
 
-1. I don't have a Mac, but the original instructions involved installing extra things on it:
+These instructions work on Ubuntu 24.04. They might work elsewhere, too, but I haven't tried that.
+
+1. I don't have a Mac, but the original instructions involved installing extra things on that:
     ```
     brew install glfw
     brew install sdl2
