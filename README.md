@@ -9,32 +9,24 @@ This is a FPS game where you can experience special relativity.
 
 ## Usage
 
-dependency
-
-* Python3
-* OpenGL
-* SDL2
-
 How to build
 
-1. Install Python3
-2. Install OpenGL
-    * At macOS `brew install glfw`
-3. If it doesn't work with the SDL2 included in this repository, install SDL2 on your own.
-    * At macOS `brew install sdl2`
-4. Install Python lib
-
+1. I don't have a Mac, but the original instructions involved installing extra things on it:
     ```
-    pip install pipenv
-    pipenv install -d
+    brew install glfw
+    brew install sdl2
     ```
-5. Built by Cython
-
+2. Set up a new virtual environment
     ```
-    python cython_setup.py build_ext --inplace
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
     ```
-6. Let's play!
-
+3. Compile the Cython code
     ```
-    pipenv run python LSBattle3D.py
+    python cython_setup.py
+    ```
+4. Let's play!
+    ```
+    ./LSBattle3D.py
     ```
