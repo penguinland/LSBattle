@@ -65,3 +65,5 @@ resources/config/*.ini
 
 # Vim swap files
 *.swp
+
+venv
