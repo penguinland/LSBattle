@@ -321,7 +321,7 @@ class MqoObject:
             if m:
                 return "object"
 
-    def _parse_material_chunk(self, handle):
+    def _parse_material_chunk(self, handle) -> list[Material]:
         """
         We take in an open file handle into the middle of a Metasequoia
         document, pointing to the line just after the Material block was opened.
@@ -361,7 +361,7 @@ class MqoObject:
             materials.append(material)
         return materials
 
-    def _parse_object_chunk(self, handle):
+    def _parse_object_chunk(self, handle) -> Obj:
         obj = Obj()
         vertices = []
         while True:

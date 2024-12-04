@@ -8,7 +8,7 @@ class Point:
         self.vertex = vertex
         self.texcoord = texcoord
 
-    def __eq__(self, othr):
+    def __eq__(self, othr: Point):
         return (self.vertex == othr.vertex and self.texcoord == othr.texcoord)
 
     def __str__(self):
@@ -20,7 +20,11 @@ class Point:
         return s
 
 
-def output(name, points, objects):
+def output(name: str, points, objects):
+    """
+    Writes a .gpo file with the given name, containing the given points and
+    objects.
+    """
     with open(name+".gpo", "w") as of:
         of.write("Game Polygon Object\n")
         for point in points:
@@ -30,7 +34,11 @@ def output(name, points, objects):
             of.write("i " + " ".join([str(i)for i in indices]) + "\n")
 
 
-def mqo2gpo(name):
+def mqo2gpo(name: str):
+    """
+    Given a filename describing a Metasequoia document, convert the data to a
+    .gpo file.
+    """
     mqo = mqo_loader.MqoObject(open(name))
 
     def _uv(i):
@@ -47,6 +55,7 @@ def mqo2gpo(name):
                 index = len(points)
                 points.append(p)
         return index
+
     def _col(i):
         index = face.indices[i]
         p = Point(mqo.obj.vertices[index])
