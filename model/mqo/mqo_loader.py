@@ -41,11 +41,6 @@ class Face(object):
             self.uv = [float(i) for i in uv.split()]
             if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
-            # TODO: what's the point of this!? Does it have to do with mirroring
-            # the texture? We used to mirror the entire face as we loaded it,
-            # but that got removed; maybe this needs to be removed to match...
-            for i in range(1, self.n * 2, 2):
-                self.uv[i] = 1.0 - self.uv[i]
 
         self.make_hash()
 
