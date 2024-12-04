@@ -21,14 +21,13 @@ class Point:
 
 
 def output(name, points, objects):
-    of = open(name+".gpo", "w")
-    of.write("Game Polygon Object\n")
-    for point in points:
-        of.write(str(point) + "\n")
-    for material, indices in objects:
-        of.write(str(material) + "\n")
-        of.write("i " + " ".join([str(i)for i in indices]) + "\n")
-    of.close()
+    with open(name+".gpo", "w") as of:
+        of.write("Game Polygon Object\n")
+        for point in points:
+            of.write(str(point) + "\n")
+        for material, indices in objects:
+            of.write(str(material) + "\n")
+            of.write("i " + " ".join([str(i)for i in indices]) + "\n")
 
 
 def mqo2gpo(name):
