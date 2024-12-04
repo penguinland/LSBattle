@@ -105,6 +105,11 @@ class Material:
     def __eq__(self, other):
         return self.color == other.color and self.tex_name == other.tex_name
 
+    def __str__(self):
+        s = "m " + " ".join([str(c)for c in self.color])
+        s += " \"" + self.tex_name + "\""
+        return s
+
 
 class Obj:
     def __init__(self):

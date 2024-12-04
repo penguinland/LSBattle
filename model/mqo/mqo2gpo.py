@@ -20,17 +20,6 @@ class Point:
         return s
 
 
-class Material:
-    def __init__(self, m):
-        self.color = m.color
-        self.tex_name = m.tex_name
-
-    def __str__(self):
-        s = "m " + " ".join([str(c)for c in self.color])
-        s += " \"" + self.tex_name + "\""
-        return s
-
-
 def output(name, points, objects):
     of = open(name+".gpo", "w")
     of.write("Game Polygon Object\n")
@@ -71,7 +60,7 @@ def mqo2gpo(name):
     objects = []
     for num, face in enumerate(mqo.obj.faces):
         if num == 0 or face.material != mqo.obj.faces[num-1].material:
-            objects.append([Material(mqo.materials[face.material]), []])
+            objects.append([mqo.materials[face.material], []])
             indices = objects[-1][1]
         if face.uv is None:
             if face.n == 3:
