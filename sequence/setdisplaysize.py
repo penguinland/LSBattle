@@ -9,7 +9,7 @@ from program.text import MyFont
 from sequence.locals import MenuItems, backimage
 
 
-class SetDisplaySize(object):
+class SetDisplaySize:
     def init(self):
         self.texts = ["%i * %i"%size for size in DISP_SIZES]
         if not BOX.FULL_SCREEN:

@@ -46,7 +46,7 @@ _args[2] = _arg2
 _args[3] = _arg3
 _args[4] = _arg4
 
-cdef class Vector4D(object):
+cdef class Vector4D:
 
     def __init__(self, *args):
         _args[len(args)](self, args)

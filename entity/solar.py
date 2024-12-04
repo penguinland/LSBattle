@@ -86,7 +86,7 @@ def _high_func(sphere_radius, tilt):
     return func
 
 
-class Star(object):
+class Star:
     def __init__(self, X, star_data):
         func = _high_func(star_data.sphere_radius, star_data.tilt)
         self.radius = star_data.sphere_radius
@@ -140,7 +140,7 @@ class Star(object):
             self.X_dead = self.X.copy()
 
 
-class SolarSystem(object):
+class SolarSystem:
     """
     We act as a collection of stars: we draw all the stars, check for collisions
     with them all, and also confusingly act as a dict containing them all.

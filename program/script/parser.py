@@ -3,7 +3,7 @@ import re
 from .common import Block
 
 
-class Parser(object):
+class Parser:
     def __init__(self):
         self.re_block = re.compile(r"^(\w+)\s*{$")
         self.re_member = re.compile(r"^(\w+)\s*=\s*(.+)")

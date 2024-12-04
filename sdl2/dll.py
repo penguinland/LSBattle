@@ -39,7 +39,7 @@ def _findlib(libnames, path=None):
     return results
 
 
-class _DLL(object):
+class _DLL:
     """Function wrapper around the different DLL functions. Do not use or
     instantiate this one directly from your user code.
     """

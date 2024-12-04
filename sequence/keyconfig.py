@@ -7,8 +7,7 @@ from program.const import *
 from sequence.locals import Keys, MenuItems, M
 
 
-class KeyConfig(object):
-
+class KeyConfig:
     def init(self):
         self.keys = Keys()
         self.keys.load_map()

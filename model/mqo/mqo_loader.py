@@ -2,7 +2,7 @@ import operator
 import re
 
 
-class Face(object):
+class Face:
     # __slots__ contains a list of all fields within the class
     __slots__ = ("n", "indices", "material", "uv", "h")
 
@@ -92,7 +92,7 @@ class Face(object):
         return face
 
 
-class Material(object):
+class Material:
     """
     This is a glorified mutable tuple of (color, texture_name)
     """
@@ -106,7 +106,7 @@ class Material(object):
         return self.color == other.color and self.tex_name == other.tex_name
 
 
-class Obj(object):
+class Obj:
     def __init__(self):
         self.vertices = []
         self.faces  = []
@@ -225,7 +225,7 @@ class Obj(object):
                          for x, y, z in self.vertices]
 
 
-class MqoObject(object):
+class MqoObject:
     """
     This class is a way to take an open file handle pointing at a Metasequoia
     document, and constructing an Obj and a Material list from it, both of which
@@ -469,7 +469,7 @@ class MqoObject(object):
 
 if __name__ == "__main__":
     import time, sys
-    class F(object):
+    class F:
         def __init__(self, io):
             self.lis = io.readlines()
             self.n = len(self.lis)

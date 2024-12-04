@@ -11,7 +11,7 @@ from program.text import Sentence, drawSentence
 from sequence.locals import MenuItems, backimage
 
 
-class Title(object):
+class Title:
     PLAY    = 0
     OPTION  = 1
     RANKING = 2

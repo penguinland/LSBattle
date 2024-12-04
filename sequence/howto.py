@@ -7,7 +7,7 @@ from program.const import *
 from sequence.locals import Keys, MenuItems, M
 
 
-class Howto(object):
+class Howto:
     def __init__(self, level):
         self.keys = Keys()
         self.keys.load_map()

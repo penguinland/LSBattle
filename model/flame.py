@@ -7,7 +7,7 @@ from program.box import BOX
 from program.utils import DY_TEXTURE_KYU
 
 
-class Flame(object):
+class Flame:
     def __init__(self, S=0.5, v=0.6, n=5, m=10,
                  color=(1.0, 0.9, 0.99, 0.6), psize=0.02):
         """

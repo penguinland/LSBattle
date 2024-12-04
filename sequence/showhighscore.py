@@ -19,7 +19,7 @@ _rank = ["1st",
          "10th"]
 
 
-class ShowHighScore(object):
+class ShowHighScore:
     def __init__(self, scores, i):
         self.make_text(scores)
         self.i = i

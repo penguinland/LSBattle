@@ -125,7 +125,7 @@ void main() {
 """
 
 
-class PointSprite(object):
+class PointSprite:
     def __init__(self, vertices=None, size=None, color=None, size_w=True,
                  texture=DY_TEXTURE_KYU, doppler_shifted=True):
         # Only the player themself should not be doppler shifted.

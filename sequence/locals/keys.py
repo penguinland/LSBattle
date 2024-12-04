@@ -8,7 +8,7 @@ import sdl2
 from program.const import CONFIG_DIR
 
 
-class Keys(object):
+class Keys:
     config_fname = CONFIG_DIR + "keyconfig.ini"
     keymap_fname = CONFIG_DIR + "keymap.dat"
 

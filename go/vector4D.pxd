@@ -1,4 +1,4 @@
-cdef class Vector4D(object):
+cdef class Vector4D:
     cdef double _t, _x, _y, _z
     cpdef Vector4D copy(self)
     cpdef double squared_norm_to(self, Vector4D othr)

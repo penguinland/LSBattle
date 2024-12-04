@@ -8,8 +8,7 @@ from go.vector4D cimport Vector4D, vec4_from_floats
 from go.matrix44 cimport Matrix44, Lorentz
 
 
-cdef class Matrix44(object):
-
+cdef class Matrix44:
     def __init__(self, m=None):
         if m:
             self.m00 = m[ 0]; self.m01 = m[ 1]; self.m02 = m[ 2]; self.m03 = m[ 3]

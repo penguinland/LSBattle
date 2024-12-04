@@ -14,7 +14,7 @@ from program.utils import FlatScreen, fill_screen, DY_TEXTURE_EDGE
 from program.text import drawSentence
 
 
-class PlayerState(object):
+class PlayerState:
     def __init__(self):
         self.max_gun_num = len(script.player.guns)
         self.gun_mode = 0
@@ -55,7 +55,7 @@ class PlayerState(object):
         self.make_gun_icon()
 
 
-class Gun(object):
+class Gun:
     def __init__(self, world, gun_data):
         self.world = world
         self.name = gun_data.name
@@ -124,7 +124,7 @@ class Gun(object):
             keys.k_bullet -= self.reload_time * par_frame
 
 
-class Player(object):
+class Player:
     def __init__(self, world, level, state, pos):
         self.world = world
         self.state = state

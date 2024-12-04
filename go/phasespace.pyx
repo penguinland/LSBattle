@@ -6,8 +6,7 @@ from go.vector4D cimport Vector4D, vec4_from_floats
 from go.matrix44 cimport Matrix44, Lorentz
 
 
-cdef class PhaseSpace(object):
-
+cdef class PhaseSpace:
     cdef public Vector4D X, U
 
     def __init__(self, X, U):
@@ -35,4 +34,3 @@ cdef class PhaseSpace(object):
         else:
             self.U += accel * ds
         self.U._t = sqrt(1.0 + self.U._x*self.U._x + self.U._y*self.U._y + self.U._z*self.U._z)
-

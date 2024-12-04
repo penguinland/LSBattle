@@ -9,7 +9,7 @@ from sequence.locals import MenuItems, backimage
 from sequence.setdisplaysize import SetDisplaySize
 
 
-class Option(object):
+class Option:
     def __init__(self):
         self.texts = ["Key Config",
                       "Display Size"]

@@ -10,7 +10,7 @@ from program.const import VIEW_ANGLE, GAME_NAME, CONFIG_DIR, DISP_SIZES
 from program import script
 
 
-class _Box(object):
+class _Box:
     def __init__(self):
         """
         Load setting file from CONFIG_DIR/setting.ini

@@ -9,7 +9,7 @@ from sequence.keyconfig import KeyConfig
 from sequence.locals import MenuItems
 
 
-class StopMenu(object):
+class StopMenu:
     PLAY   = 0
     CONFIG = 1
     TITLE  = 2

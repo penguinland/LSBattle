@@ -1,7 +1,7 @@
 from OpenGL.GL import *
 
 
-class ProgramInfo(object):
+class ProgramInfo:
     def __init__(self, program_id, vertex_source, fragment_source, key):
         self.program_id = program_id
         self.vertex_source = vertex_source

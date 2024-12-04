@@ -3,7 +3,7 @@ import os
 from . import mqo_loader
 
 
-class Point(object):
+class Point:
     def __init__(self, vertex, texcoord=None):
         self.vertex = vertex
         self.texcoord = texcoord
@@ -20,7 +20,7 @@ class Point(object):
         return s
 
 
-class Material(object):
+class Material:
     def __init__(self, m):
         self.color = m.color
         self.tex_name = m.tex_name

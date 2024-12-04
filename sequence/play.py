@@ -14,7 +14,7 @@ from sequence.locals import Keys
 from sequence.stopmenu import StopMenu
 
 
-class Play(object):
+class Play:
     WIN  = 0
     LOSE = 1
     ELSE = 2

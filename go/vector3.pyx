@@ -28,7 +28,7 @@ _args[2] = NULL
 _args[3] = _arg3
 
 
-cdef class Vector3(object):
+cdef class Vector3:
     def __init__(self, *args):
         _args[len(args)](self, args)
 

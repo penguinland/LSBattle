@@ -13,7 +13,7 @@ from program.const import IMG_DIR, VIEW_ANGLE
 from program.utils import load_texture, compile_program, search_imagefile
 
 
-class Sky(object):
+class Sky:
     def __init__(self):
         self.init_vertex()
         self.init_program()

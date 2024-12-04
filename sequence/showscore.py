@@ -7,7 +7,7 @@ from program.const import *
 from sequence.locals import MenuItems, M
 
 
-class ShowScore(object):
+class ShowScore:
     TITLE = 0
     NEXT  = 1
     def __init__(self, score):

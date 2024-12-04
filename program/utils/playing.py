@@ -19,7 +19,7 @@ def fill_screen(r, g, b, a=1.0):
     FlatScreen.pop()
 
 
-class FlatScreen(object):
+class FlatScreen:
     """
     FlatScreen.push()
     ~~~ some codes ~~~
@@ -50,7 +50,7 @@ class FlatScreen(object):
         cls.matrix_stack = None
 
 
-class FramePerSec(object):
+class FramePerSec:
     """
     count flame par second
     """
@@ -67,7 +67,7 @@ class FramePerSec(object):
         return self.n / sum(self.l)
 
 
-class Snapshot(object):
+class Snapshot:
     """
     take a display's snapshot and show it
 

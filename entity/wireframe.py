@@ -5,7 +5,7 @@ from program import script
 from program.utils import compile_program
 
 
-class WireFrame(object):
+class WireFrame:
     vertices = None
 
     def __init__(self, scale):
