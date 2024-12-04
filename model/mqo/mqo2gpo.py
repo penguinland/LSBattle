@@ -69,7 +69,10 @@ def mqo2gpo(name: str):
     points = [None]*pre_len
     objects = []
     for num, face in enumerate(mqo.obj.faces):
+        # Faces within mqo.obj are sorted by material. If this face's material
+        # is different from the previous one...
         if num == 0 or face.material != mqo.obj.faces[num-1].material:
+            # ...TODO
             objects.append([mqo.materials[face.material], []])
             indices = objects[-1][1]
         if face.uv is None:
