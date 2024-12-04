@@ -8,7 +8,9 @@ class Point:
         self.vertex = vertex
         self.texcoord = texcoord
 
-    def __eq__(self, othr: Point):
+    def __eq__(self, othr):
+        if not isinstance(othr, Point):
+            return False
         return (self.vertex == othr.vertex and self.texcoord == othr.texcoord)
 
     def __str__(self):
