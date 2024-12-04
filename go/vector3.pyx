@@ -5,6 +5,14 @@ from libc.math cimport sqrt
 from go.vector3 cimport Vector3, vec3_from_floats
 
 
+# SNEAKY TRICK ALERT: we get Vector3 to act as though it has multiple C++-like
+# constructors, by having it take a variadic argument list. Depending on the
+# length of the argument list, we pass it to different functions to initialize
+# things. So, the functions _arg0, _arg1, and _arg3 are the functions to pass it
+# to, and _args is a list of constructor-like functions, each of which takes a
+# different length argument list. Then, Vector3.__init__ uses the length of its
+# argument list as an index into the list _args, to get the right function
+# implementation.
 cdef void _arg0(Vector3 self, args):
     self._x = 0.0
     self._y = 0.0
@@ -21,10 +29,12 @@ cdef void _arg3(Vector3 self, args):
     self._x = x
     self._y = y
     self._z = z
+# _args is an array of 4 function pointers, each of which takes self and args
+# and returns void.
 cdef void (*_args[4])(Vector3 self, args)
 _args[0] = _arg0
 _args[1] = _arg1
-_args[2] = NULL
+_args[2] = NULL  # No constructor takes 2 args.
 _args[3] = _arg3
 
 
