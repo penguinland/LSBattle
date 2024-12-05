@@ -43,9 +43,9 @@ def mqo2gpo(name: str):
     """
     mqo = mqo_loader.MqoObject(open(name))
 
-    def _uv(face, i):
+    def _uv(obj, face, i):
         index = face.indices[i]
-        p = Point(mqo.obj.vertices[index], face.uv[i*2:i*2+2])
+        p = Point(obj.vertices[index], face.uv[i*2:i*2+2])
         if points[index] is None or points[index].texcoord is None:
             points[index] = p
         elif p.texcoord != points[index].texcoord:
@@ -58,9 +58,9 @@ def mqo2gpo(name: str):
                 points.append(p)
         return index
 
-    def _col(face, i):
+    def _col(obj, face, i):
         index = face.indices[i]
-        p = Point(mqo.obj.vertices[index])
+        p = Point(obj.vertices[index])
         if points[index] is None:
             points[index] = p
         return index
@@ -77,15 +77,15 @@ def mqo2gpo(name: str):
             indices = objects[-1][1]
         if face.uv is None:
             if face.n == 3:
-                l = [_col(face, i) for i in (0,1,2)]
+                l = [_col(mqo.obj, face, i) for i in (0,1,2)]
             else:
-                l = [_col(face, i) for i in (0,1,2,3)]
+                l = [_col(mqo.obj, face, i) for i in (0,1,2,3)]
                 l = [l[i] for i in (0,1,2,0,2,3)]
         else:
             if face.n == 3:
-                l = [_uv(face, i) for i in (0,1,2)]
+                l = [_uv(mqo.obj, face, i) for i in (0,1,2)]
             else:
-                l = [_uv(face, i) for i in (0,1,2,3)]
+                l = [_uv(mqo.obj, face, i) for i in (0,1,2,3)]
                 l = [l[i] for i in (0,1,2,0,2,3)]
         indices.extend(l)
 
