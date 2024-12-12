@@ -121,12 +121,12 @@ def mqo2gpo(name: str):
         # triangle involved.
         indices.extend(l)
 
-    # QUESTIONABLE JUDGEMENT ALERT! It's possible (though exceedingly unlikely)
-    # that some vertices in the original model are unused. Any such unused
-    # points will still have None as their value in the `points` list. We filter
-    # them out by constructing a map from the vertex index in the original list
-    # to its index in a list with all unused points removed, and then update all
-    # indices used in all objects to the new set of indices.
+    # For reasons unknown, many of our models come with dozens of unused
+    # vertices defined in the .mqo files. Any such unused points will still have
+    # None as their value in the `points` list. We filter them out by
+    # constructing a map from the vertex index in the original list to its index
+    # in a list with all unused points removed, and then update all indices used
+    # in all objects to the new set of indices.
     pmap = [0]*len(points)
     index = 0
     for i, p in enumerate(points):
