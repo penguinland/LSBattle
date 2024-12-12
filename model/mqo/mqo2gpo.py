@@ -117,10 +117,16 @@ def mqo2gpo(name: str):
             else:
                 l = [_uv(mqo.obj, face, i) for i in (0,1,2,3)]
                 l = [l[i] for i in (0,1,2,0,2,3)]
-        # Add triples of point indices to the end of this object for each
-        # triangle to add to it.
+        # Add triples of point indices to the end of the current object for each
+        # triangle involved.
         indices.extend(l)
 
+    # QUESTIONABLE JUDGEMENT ALERT! It's possible (though exceedingly unlikely)
+    # that some vertices in the original model are unused. Any such unused
+    # points will still have None as their value in the `points` list. We filter
+    # them out by constructing a map from the vertex index in the original list
+    # to its index in a list with all unused points removed, and then update all
+    # indices used in all objects to the new set of indices.
     pmap = [0]*len(points)
     index = 0
     for i, p in enumerate(points):
@@ -131,5 +137,7 @@ def mqo2gpo(name: str):
     for obj in objects:
         obj[1] = [pmap[i]for i in obj[1]]
     points = [p for p in points if p is not None]
+
+    # Now, write out the .gpo file.
     name, ext = os.path.splitext(name)
     output(name, points, objects)
