@@ -4,6 +4,14 @@ from . import mqo_loader
 
 
 class Point:
+    """
+    This is basically a pair of (vertex, uv), where the vertex is an (x, y, z)
+    tuple of a location in space, and the uv is a pair of coordinates on a
+    texture image. Unlike the points in an MQO face, *which* texture the uv
+    coordinates go to is not specified in here! Consequently, the same location
+    in space, if it's where multiple faces with multiple textures meet, must be
+    represented by multiple instances of this class.
+    """
     def __init__(self, vertex, texcoord=None):
         self.vertex = vertex
         self.texcoord = texcoord
@@ -43,7 +51,20 @@ def mqo2gpo(name: str):
     """
     mqo = mqo_loader.MqoObject(open(name))
 
+    pre_len = len(mqo.obj.vertices)
+    points = [None]*pre_len
+
     def _uv(obj, face, i):
+        """
+        Given a face with a texture and an index of a vertex on that face,
+        construct a Point that has the same texture. Insert it into `p` in the
+        same location as the original vertex was in obj.vertices, unless
+        "another" Point (with the same coordinates but a different texture
+        because it was part of a different face) is already there, in which case
+        add it to the end of `points` (skipping this step if it's already added
+        to the end of `points` somewhere). Then, return the index in `p` at
+        which this point exists.
+        """
         index = face.indices[i]
         p = Point(obj.vertices[index], face.uv[i*2:i*2+2])
         if points[index] is None or points[index].texcoord is None:
@@ -59,14 +80,17 @@ def mqo2gpo(name: str):
         return index
 
     def _col(obj, face, i):
+        """
+        Given a face that has no texture and an index of a vertex on that face,
+        construct a Point in `points` at the same index as it is in `obj`, and
+        return that index.
+        """
         index = face.indices[i]
         p = Point(obj.vertices[index])
         if points[index] is None:
             points[index] = p
         return index
 
-    pre_len = len(mqo.obj.vertices)
-    points = [None]*pre_len
     objects = []
     for num, face in enumerate(mqo.obj.faces):
         # Faces within mqo.obj are sorted by material. If this face's material
