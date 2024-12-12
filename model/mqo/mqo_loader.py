@@ -106,6 +106,9 @@ class Material:
         return self.color == other.color and self.tex_name == other.tex_name
 
     def __str__(self):
+        """
+        This is how the material will be when written out to a .gpo file.
+        """
         color_string = " ".join(str(c) for c in self.color)
         return f"m {color_string} \"{self.tex_name}\""
 

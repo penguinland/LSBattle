@@ -22,6 +22,12 @@ class Point:
         return (self.vertex == othr.vertex and self.texcoord == othr.texcoord)
 
     def __str__(self):
+        """
+        This is how the Point will be written out to a .gpo file:
+        p x y z u v
+        where the p is a literal 'p', and the u and v are both 0 if none is
+        supplied (if this Point does not have a texture).
+        """
         s = "p %f %f %f "%tuple(self.vertex)
         if self.texcoord is not None:
             s += "%f %f"%tuple(self.texcoord)
@@ -96,7 +102,7 @@ def mqo2gpo(name: str):
         # Faces within mqo.obj are sorted by material. If this face's material
         # is different from the previous one...
         if num == 0 or face.material != mqo.obj.faces[num-1].material:
-            # ...TODO
+            # ...create a new object for this material.
             objects.append([mqo.materials[face.material], []])
             indices = objects[-1][1]
         if face.uv is None:
@@ -111,6 +117,8 @@ def mqo2gpo(name: str):
             else:
                 l = [_uv(mqo.obj, face, i) for i in (0,1,2,3)]
                 l = [l[i] for i in (0,1,2,0,2,3)]
+        # Add triples of point indices to the end of this object for each
+        # triangle to add to it.
         indices.extend(l)
 
     pmap = [0]*len(points)
