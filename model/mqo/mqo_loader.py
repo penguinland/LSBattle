@@ -31,7 +31,12 @@ class Face:
             raise IOError("Face format is clashed")
         # For reasons Alan doesn't understand, this line appears to be very
         # important to render things properly. Why swap the second and last
-        # indices?
+        # indices? Perhaps these were intended to be used in a left-handed
+        # coordinate system but we're trying to use them in a right-handed one?
+        # Note that swapping the second and last ones reverses the order for
+        # both 3- and 4-vertex faces:
+        #     ABC  -> ACB
+        #     ABCD -> ADCB
         self.indices[1], self.indices[-1] = self.indices[-1], self.indices[1]
 
         if material is None:
