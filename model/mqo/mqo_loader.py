@@ -48,7 +48,6 @@ class Face:
             self.uv = None
         else:
             self.uv = [float(i) for i in uv.split()]
-
             if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
 
