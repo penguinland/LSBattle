@@ -29,6 +29,15 @@ class Face:
         self.indices = [int(i) for i in indices.split()]
         if len(self.indices) != self.n:
             raise IOError("Face format is clashed")
+        # For reasons Alan doesn't understand, this line appears to be very
+        # important to render things properly. Why swap the second and last
+        # indices? Perhaps these were intended to be used in a left-handed
+        # coordinate system but we're trying to use them in a right-handed one?
+        # Note that swapping the second and last ones reverses the order for
+        # both 3- and 4-vertex faces:
+        #     ABC  -> ACB
+        #     ABCD -> ADCB
+        self.indices[1], self.indices[-1] = self.indices[-1], self.indices[1]
 
         if material is None:
             self.material = -1
@@ -41,6 +50,16 @@ class Face:
             self.uv = [float(i) for i in uv.split()]
             if len(self.uv) != self.n * 2:
                 raise IOError("Face format is clashed")
+
+            # Swap the UV coordinates of the vertices we mysteriously swapped
+            # earlier, so they correspond again.
+            self.uv[2], self.uv[-2] = self.uv[-2], self.uv[2]
+            self.uv[3], self.uv[-1] = self.uv[-1], self.uv[3]
+            # Take the complement of all V values, as though one system counts
+            # up from the bottom and the other counts down from the top of the
+            # texture.
+            for i in range(1, self.n*2, 2):
+                self.uv[i] = 1.0 - self.uv[i]
 
         self.make_hash()
 
