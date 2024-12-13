@@ -28,9 +28,9 @@ class Point:
         where the p is a literal 'p', and the u and v are both 0 if none is
         supplied (if this Point does not have a texture).
         """
-        s = "p %f %f %f "%tuple(self.vertex)
+        s = "p %f %f %f " % tuple(self.vertex)
         if self.texcoord is not None:
-            s += "%f %f"%tuple(self.texcoord)
+            s += "%f %f" % tuple(self.texcoord)
         else:
             s += "0 0"
         return s
@@ -68,7 +68,7 @@ def mqo2gpo(name: str):
         "another" Point (with the same coordinates but a different texture
         because it was part of a different face) is already there, in which case
         add it to the end of `points` (skipping this step if it's already added
-        to the end of `points` somewhere). Then, return the index in `p` at
+        to the end of `points` somewhere). Then, return the index in `points` at
         which this point exists.
         """
         index = face.indices[i]

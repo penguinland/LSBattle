@@ -61,7 +61,7 @@ describes either a point (denoted by a line starting with 'p'), a material
 (denoted by a line starting with 'i', possibly short for "indices"). All lines
 in the file consist of space-separated vaues:
 - 'p' lines contain the x, y, and z coordinates of the point, then the UV
-  coordinates of its texture (or "0 0" for points that do not have texture)
+  coordinates of its texture (or "0 0" for points that do not have texture).
 - 'm' lines contain the RGBA values of its color, optionally followed by the
   name of the image file containing its texture. They are immeditaley followed
   by the single 'i' line that uses this material.
