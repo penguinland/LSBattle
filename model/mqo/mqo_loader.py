@@ -2,7 +2,7 @@ import operator
 import re
 
 
-class Face(object):
+class Face:
     # __slots__ contains a list of all fields within the class
     __slots__ = ("n", "indices", "material", "uv", "h")
 
@@ -92,7 +92,7 @@ class Face(object):
         return face
 
 
-class Material(object):
+class Material:
     """
     This is a glorified mutable tuple of (color, texture_name)
     """
@@ -105,8 +105,15 @@ class Material(object):
     def __eq__(self, other):
         return self.color == other.color and self.tex_name == other.tex_name
 
+    def __str__(self):
+        """
+        This is how the material will be when written out to a .gpo file.
+        """
+        color_string = " ".join(str(c) for c in self.color)
+        return f"m {color_string} \"{self.tex_name}\""
 
-class Obj(object):
+
+class Obj:
     def __init__(self):
         self.vertices = []
         self.faces  = []
@@ -163,7 +170,7 @@ class Obj(object):
         self.faces.extend(mirrored_faces)
         self.mirror = None
 
-    def check_material_uv(self, materials, material_map):
+    def sanitize_material(self, materials, material_map):
         """
         For each face in the object, ensure that it has a compatible material:
         - if the face's material has no texture, erase the face's uv values
@@ -225,7 +232,7 @@ class Obj(object):
                          for x, y, z in self.vertices]
 
 
-class MqoObject(object):
+class MqoObject:
     """
     This class is a way to take an open file handle pointing at a Metasequoia
     document, and constructing an Obj and a Material list from it, both of which
@@ -243,13 +250,13 @@ class MqoObject(object):
         materials = []
         try:
             while True:
-                chunk = self._search_chunk(handle).lower()
+                chunk = self._identify_next_chunk(handle).lower()
                 if chunk == "object": # There might be many objects...
-                    obj = self._object_chunk(handle)
+                    obj = self._parse_object_chunk(handle)
                     obj.expand_mirror()
                     self.obj += obj
                 elif chunk == "material": # ...but only 1 material chunk.
-                    materials = self._material_chunk(handle)
+                    materials = self._parse_material_chunk(handle)
                 else:
                     self._skip_chunk(handle)
         except StopIteration:  # handle hit the end of the file
@@ -269,7 +276,7 @@ class MqoObject(object):
                 index = len(self.materials)
                 self.materials.append(m)
             material_map[i] = index
-        self.obj.check_material_uv(self.materials, material_map)
+        self.obj.sanitize_material(self.materials, material_map)
         self.obj.normalize()
 
         # Sort the faces within the Obj so that the ones with the earliest
@@ -301,7 +308,7 @@ class MqoObject(object):
         else:
             raise IOError("This file does not look like a Metasequoia document")
 
-    def _search_chunk(self, handle):
+    def _identify_next_chunk(self, handle):
         """
         We take in an open file handle to the middle of a Metasequoia document.
         We consume lines until the next time we find what looks like the
@@ -317,7 +324,7 @@ class MqoObject(object):
             if m:
                 return "object"
 
-    def _material_chunk(self, handle):
+    def _parse_material_chunk(self, handle) -> list[Material]:
         """
         We take in an open file handle into the middle of a Metasequoia
         document, pointing to the line just after the Material block was opened.
@@ -357,7 +364,7 @@ class MqoObject(object):
             materials.append(material)
         return materials
 
-    def _object_chunk(self, handle):
+    def _parse_object_chunk(self, handle) -> Obj:
         obj = Obj()
         vertices = []
         while True:
@@ -368,9 +375,9 @@ class MqoObject(object):
             if m:
                 chunk = m.group(1).lower()
                 if chunk == "vertex":
-                    vertices = self._vertex_chunk(handle)
+                    vertices = self._parse_vertex_chunk(handle)
                 elif chunk == "face":
-                    obj.faces = self._face_chunk(handle)
+                    obj.faces = self._parse_face_chunk(handle)
                 else:
                     self._skip_chunk(handle)
             else:
@@ -407,7 +414,7 @@ class MqoObject(object):
 
         return obj
 
-    def _vertex_chunk(self, handle):
+    def _parse_vertex_chunk(self, handle):
         """
         The vertices are space-separated (x, y, z) tuples, one per line. We
         parse all of them until we hit the end of the block (with a "}"), and
@@ -422,7 +429,7 @@ class MqoObject(object):
             vertices.append(v)
         return vertices
 
-    def _face_chunk(self, handle):
+    def _parse_face_chunk(self, handle):
         """
         The faces match the regular expression below. We return a list of all
         parsed faces from this chunk, and advance the file handle to the end
@@ -469,7 +476,7 @@ class MqoObject(object):
 
 if __name__ == "__main__":
     import time, sys
-    class F(object):
+    class F:
         def __init__(self, io):
             self.lis = io.readlines()
             self.n = len(self.lis)

@@ -6,7 +6,7 @@ from program.box import BOX
 from sequence.locals import MenuItems
 
 
-class Loading(object):
+class Loading:
     def __init__(self):
         self.text = ["Now loading....."]
 

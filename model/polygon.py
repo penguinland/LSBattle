@@ -7,7 +7,7 @@ from model.mqo.mqo2gpo import mqo2gpo
 from program.utils import load_texture, search_imagefile, compile_program
 
 
-class Material(object):
+class Material:
     def __init__(self, color, tex_name=None, texture=True, path=""):
         self.color = color
         if tex_name and texture:
@@ -24,7 +24,7 @@ class Material(object):
             self.texture_id = load_texture(self.tex_name)
 
 
-class MqoGpoPolygon(object):
+class MqoGpoPolygon:
     def load_gpo(self, name, func=lambda x,y,z:(x,y,z), texture=True):
         igpo = open(name)
         if next(igpo).strip() != "Game Polygon Object":

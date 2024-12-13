@@ -7,7 +7,7 @@ from program.const import KS_ESC, KS_RETURN
 from sequence.locals import MenuItems
 
 
-class GameOver(object):
+class GameOver:
     def __init__(self):
         self.lose_text = ["Game Over"]
         self.win_text = ["Game Clear!!"]

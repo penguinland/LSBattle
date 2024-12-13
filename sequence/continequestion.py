@@ -9,7 +9,7 @@ from program.text import Sentence
 from sequence.locals import MenuItems
 
 
-class ContineQuestion(object):
+class ContineQuestion:
     YES = 0
     NO  = 1
     def __init__(self):

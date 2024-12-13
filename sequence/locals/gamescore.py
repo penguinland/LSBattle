@@ -1,7 +1,7 @@
 from program import script
 
 
-class GameScore(object):
+class GameScore:
     def __init__(self, world, stage):
         self.stage  = stage
         self.p_time = world.player.time

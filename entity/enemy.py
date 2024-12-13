@@ -15,7 +15,7 @@ from program.const import IMG_DIR
 from program.text import drawSentence3d
 
 
-class EnemyState(object):
+class EnemyState:
     __slots__ = ("quaternion", "time", "hp")
     def __init__(self, quaternion, time, hp):
         self.quaternion = quaternion.copy()
@@ -23,7 +23,7 @@ class EnemyState(object):
         self.hp = hp if hp > 0.0 else 0.0
 
 
-class Enemy(object):
+class Enemy:
     def __init__(self, world, X, number, typ=None, level=None):
         self.world = world
         self.scale = world.scale
@@ -317,7 +317,7 @@ class Enemy(object):
             return self.flame.draw(self.X_dead, Xp, L, self.L_dead)
 
 
-class Enemies(object):
+class Enemies:
     def __init__(self, world):
         self.enemies = []
         self.n = 0

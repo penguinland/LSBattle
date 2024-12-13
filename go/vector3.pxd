@@ -1,4 +1,4 @@
-cdef class Vector3(object):
+cdef class Vector3:
     cdef double _x, _y, _z
     cpdef copy(self)
 

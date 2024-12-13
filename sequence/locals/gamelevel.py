@@ -7,7 +7,7 @@ HARD   = 2
 TRAVEL = 3
 
 
-class GameLevel(object):
+class GameLevel:
     def __init__(self, stage, mode):
         self.stage = stage
         self.mode = mode

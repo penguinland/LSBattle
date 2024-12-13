@@ -19,7 +19,7 @@ from sequence.title import Title
 from sequence.travel import Travel
 
 
-class Game(object):
+class Game:
     def __init__(self):
         BOX.game_init()
         BOX.resize(script.game.scale)

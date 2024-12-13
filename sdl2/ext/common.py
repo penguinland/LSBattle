@@ -68,7 +68,7 @@ def get_events():
     return evlist
 
 
-class TestEventProcessor(object):
+class TestEventProcessor:
     """A simple event processor for testing purposes."""
     def run(self, window):
         """Starts an event loop without actually processing any event."""

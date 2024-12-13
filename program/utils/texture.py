@@ -45,7 +45,7 @@ def dynamic_texture(n):
         return raw_data, L, L, "LA"
 
 
-class TextureInfo(object):
+class TextureInfo:
     def __init__(self, name, texture_id, width, height, mode):
         self.name = name
         self.texture_id = texture_id

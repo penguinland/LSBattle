@@ -4,7 +4,7 @@ from program.const import IMG_DIR
 from program import script
 
 
-class Item(object):
+class Item:
     def __init__(self, item, X, scale=1.0):
         self.item = item
         self.X = X

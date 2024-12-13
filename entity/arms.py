@@ -9,7 +9,7 @@ from program.utils import DY_TEXTURE_KYU
 from program import script
 
 
-class Bullet(object):
+class Bullet:
     def __init__(self, X, U, L, N, S):
         self.X = X.copy()
         self.U = U.get_lis_glsl()
@@ -51,7 +51,7 @@ class Bullet(object):
             return True
 
 
-class SlowBullet(object):
+class SlowBullet:
     def __init__(self, X, N, S, id):
         self.X = X.copy()
         self.N = N.copy()
@@ -98,7 +98,7 @@ class SlowBullet(object):
             return True
 
 
-class _BaseBullets(object):
+class _BaseBullets:
     def __iter__(self):
         return iter(self.bullets)
 

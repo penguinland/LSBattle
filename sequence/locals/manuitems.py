@@ -4,7 +4,7 @@ from program.box import BOX
 from program.text import Sentence
 
 
-class M(object):
+class M:
     CENTER      = 0
     TOP         = 1
     BOTTOM      = 2
@@ -14,7 +14,7 @@ class M(object):
     LEFT_LEFT   = 6
 
 
-class MenuItems(object):
+class MenuItems:
     def __init__(self, texts, height, between_lines=0.3,
                  row=M.CENTER, colum=M.CENTER, ofx=0, ofy=0, ret=False,
                  title=None, title2=None,

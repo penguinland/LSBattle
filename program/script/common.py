@@ -1,7 +1,7 @@
 import re
 
 
-class Block(object):
+class Block:
     """
     SMELL ALERT! This is a way to conflate a Python class with a Javascript
     object. The object acts like a dict where the keys of the dict are fields of

@@ -8,7 +8,7 @@ from program.utils import load_texture, FlatScreen
 
 
 _OFFSET = 32
-class MyFont(object):
+class MyFont:
     c_map = [[0, 0]for i in range(_OFFSET, 127)]
     name = ""
     height = 0
@@ -68,8 +68,7 @@ class MyFont(object):
         glTexCoord(tx+tw, ty);    glVertex(x+dx1,     y+dy1,     z+dz1)
         glTexCoord(tx,    ty);    glVertex(x,         y,         z)
 
-class Sentence(object):
-
+class Sentence:
     def __init__(self, sentence, height):
         if isinstance(sentence, str):
             self.text = [ord(c) for c in sentence]

@@ -88,7 +88,7 @@ _args[3] = _arg3
 _args[4] = _arg4
 
 
-cdef class Quaternion(object):
+cdef class Quaternion:
     cdef double _t, _x, _y, _z
 
     def __init__(self, *args):

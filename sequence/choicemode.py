@@ -7,7 +7,7 @@ from program.const import *
 from sequence.locals import MenuItems, backimage
 
 
-class ChoiceMode(object):
+class ChoiceMode:
     EASY   = 0
     NORMAL = 1
     HARD   = 2

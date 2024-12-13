@@ -5,14 +5,14 @@ from libc.math cimport sqrt
 from go.vector4D cimport Vector4D
 
 
-cdef class Cache(object):
+cdef class Cache:
     cdef public int ix
     cdef public double s
     def __init__(self):
         self.ix = 0
         self.s = 0.0
 
-cdef class WorldLine(object):
+cdef class WorldLine:
     cdef int n
     cdef list line, state
     cdef dict ix_map

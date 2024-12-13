@@ -14,7 +14,7 @@ from sequence.locals import Keys
 from sequence.stopmenu import StopMenu
 
 
-class Travel(object):
+class Travel:
     def __init__(self, level, scale, playerstate):
         BOX.resize(scale)
         self.stopmenu = StopMenu()

@@ -13,7 +13,7 @@ from entity import Item
 from program.const import *
 
 
-class World(object):
+class World:
     def __init__(self, level, scale, playerstate, item=None):
         self.level = level
         self.scale = scale

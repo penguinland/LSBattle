@@ -11,7 +11,7 @@ from sequence.showhighscore import ShowHighScore
 
 _max_score_num = 10
 _max_name_num = 8
-class EntryHighScore(object):
+class EntryHighScore:
     def __init__(self, score):
         self.new_score = score
         scores = []

@@ -8,7 +8,7 @@ from program.box import BOX
 from program.utils import load_texture, search_imagefile, FlatScreen
 
 
-class BackImage(object):
+class BackImage:
     def load(self):
         if script.ui.backimage.image is None:
             self.draw = self._draw_only_clear

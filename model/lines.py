@@ -5,7 +5,7 @@ from OpenGL.GL import *
 from program.utils import compile_program
 
 
-class Lines(object):
+class Lines:
     """
     This is only used in entity/player.py, to draw windows(?) around each enemy.
     """

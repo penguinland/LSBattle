@@ -52,4 +52,25 @@ Each object chunk contains:
   numbers). An example of a fields is "scale 1.000000 1.000000 1.000000".
   - The fields we seem to care about within an object are the mirror,
     mirror_axis, color, scale, rotation, and translation.
+
+----------------
+
+In contrast, .gpo files have a slightly different format. Each line in them
+describes either a point (denoted by a line starting with 'p'), a material
+(denoted by a line starting with 'm'), or a description of an object's shape
+(denoted by a line starting with 'i', possibly short for "indices"). All lines
+in the file consist of space-separated vaues:
+- 'p' lines contain the x, y, and z coordinates of the point, then the UV
+  coordinates of its texture (or "0 0" for points that do not have texture).
+- 'm' lines contain the RGBA values of its color, optionally followed by the
+  name of the image file containing its texture. They are immeditaley followed
+  by the single 'i' line that uses this material.
+- 'i' lines contain the indices of the points in triangles that use the
+  color/texture described on the preceding 'm' line. The number of indices on an
+  'i' line is a multiple of 3: each triple of them corresponds to a different
+  triangle that uses the same material (color/texture).
+
+Note that, in a .gpo file, a single (x, y, z) point in space may have multiple
+'p'-lines associated with it, if multiple faces with different UV-values for
+their textures all converge on that vertex!
 """
