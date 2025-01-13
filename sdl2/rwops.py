@@ -1,3 +1,4 @@
+from collections.abc import Callable
 import sys
 from ctypes import Structure, POINTER, CFUNCTYPE, c_int, c_size_t, c_void_p, \
     c_char_p, memmove, string_at
@@ -74,9 +75,10 @@ SDL_WriteBE32 = _bind("SDL_WriteBE32", [POINTER(SDL_RWops), Uint32], c_size_t)
 SDL_WriteLE64 = _bind("SDL_WriteLE64", [POINTER(SDL_RWops), Uint64], c_size_t)
 SDL_WriteBE64 = _bind("SDL_WriteBE64", [POINTER(SDL_RWops), Uint64], c_size_t)
 
-if sys.version_info[0] >= 3:
-    import collections
-    callable = lambda x: isinstance(x, collections.Callable)
+
+def callable(value):
+    return isinstance(x, Callable)
+
 
 def rw_from_object(obj):
     """Creats a SDL_RWops from any Python object.
