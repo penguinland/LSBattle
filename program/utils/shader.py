@@ -1,3 +1,4 @@
+import ctypes
 from OpenGL.GL import *
 
 
@@ -22,9 +23,11 @@ def compile_shader(source, shader_type):
     return shader
 
 
-_compiled_program = {}
-_using_program_id = {}
-def compile_program(vertex_source, fragment_source, cache=True):
+_compiled_program: dict[str, ProgramInfo] = {}
+_using_program_id: dict[ctypes.c_uint, ProgramInfo] = {}
+def compile_program(vertex_source: str,
+                    fragment_source: str,
+                    cache: bool=True) -> ctypes.c_uint:
     key = vertex_source + fragment_source
     if cache:
         program_info = _compiled_program.get(key)
