@@ -1,10 +1,4 @@
-"""
-# cython: profile=False
-cimport cython
-from libc.math cimport sqrt
-
-from go.vector3 cimport Vector3, vec3_from_floats
-"""
+from typing import Iterator
 
 
 def _arg0(self: Vector3, args) -> None: ...
@@ -55,11 +49,7 @@ class Vector3:
 
     def __repr__(self) -> str: ...
 
-    # TODO
-    def __iter__(self):
-        yield self._x
-        yield self._y
-        yield self._z
+    def __iter__(self) -> Iterator[float]: ...
 
     def __add__(self, rhs: Vector3) -> Vector3: ...
     def __iadd__(self, rhs: Vector3)-> Vector3: ...

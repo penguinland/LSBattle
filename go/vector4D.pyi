@@ -1,11 +1,4 @@
-"""
-# cython: profile=False
-cimport cython
-from libc.math cimport sqrt
-
-from go.vector3 cimport vec3_from_floats
-from go.vector4D cimport Vector4D, vec4_from_floats
-"""
+from typing import Iterator
 
 
 """
@@ -97,11 +90,7 @@ class Vector4D:
     d = property(_get_3d, _set_3d, None, "space part")
     """
 
-    def __iter__(self):
-        yield self._t
-        yield self._x
-        yield self._y
-        yield self._z
+    def __iter__(self) -> Iterator[float]: ...
 
     def __add__(lhs, rhs: Vector4D) -> Vector4D: ...
     def __iadd__(self, rhs: Vector4D) -> Vector4D: ...

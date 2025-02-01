@@ -1,12 +1,11 @@
-"""
-# cython: profile=False
-cimport cython
-from libc.math cimport cos, sin, sqrt, acos
-DEF pi = 3.141592653589793115997963468544185161590576171875
-"""
+from typing import Iterator
 
 from go.matrix44 import Matrix44
 
+
+"""
+DEF pi = 3.141592653589793115997963468544185161590576171875
+"""
 
 """
 cdef void _arg0(Quaternion self, args):
@@ -128,11 +127,7 @@ class Quaternion:
 
     def __str__(self) -> str: ...
 
-    def __iter__(self):
-        yield self._t
-        yield self._x
-        yield self._y
-        yield self._z
+    def __iter__(self) -> Iterator[float]: ...
 
     def __mul__(self, rhs: Quaternion) -> Quaternion: ...
     def __imul__(self, rhs: Quaternion) -> Quaternion: ...
