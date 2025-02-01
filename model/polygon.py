@@ -1,4 +1,5 @@
 import os
+import typing as t
 
 from OpenGL.GL import *
 
@@ -170,7 +171,7 @@ void main() {
 """
 
 
-_polygon_cache = {}
+_polygon_cache: t.Mapping[str, Polygon] = {}
 class Polygon(MqoGpoPolygon):
     def load_program_tex(self):
         self.program_tex = compile_program(
