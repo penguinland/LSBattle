@@ -21,29 +21,11 @@ class Vector3:
         _args[len(args)](self, args)
 
     def copy(self) -> Vector3: ...
-    # TODO
     __copy__ = copy
 
-    """
-    # TODO
-    def _get_x(self):
-        return self._x
-    def _set_x(self, double x):
-        self._x = x
-    x = property(_get_x, _set_x, None, "x component.")
-
-    def _get_y(self):
-        return self._y
-    def _set_y(self, double y):
-        self._y = y
-    y = property(_get_y, _set_y, None, "y component.")
-
-    def _get_z(self):
-        return self._z
-    def _set_z(self, double z):
-        self._z = z
-    z = property(_get_z, _set_z, None, "z component.")
-    """
+    x: float
+    y: float
+    z: float
 
     def __str__(self) -> str: ...
 

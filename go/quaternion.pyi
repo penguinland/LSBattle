@@ -3,9 +3,7 @@ from typing import Iterator
 from go.matrix44 import Matrix44
 
 
-"""
-DEF pi = 3.141592653589793115997963468544185161590576171875
-"""
+pi: float
 
 """
 cdef void _arg0(Quaternion self, args):
@@ -97,6 +95,7 @@ class Quaternion:
     _y: float
     _z: float
 
+    # TODO: get better typing here
     def __init__(self, *args) -> None: ...
 
     # TODO: should this be a static method? Why does it modify self?

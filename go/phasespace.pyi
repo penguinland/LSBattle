@@ -1,5 +1,4 @@
 from go.vector4D import Vector4D
-from go.matrix44 import Matrix44
 
 
 class PhaseSpace:

@@ -1,37 +1,18 @@
-# cython: profile=False
-#cimport cython
-#from libc.math cimport sqrt, sin, cos
+from typing import Optional
 
-import typing as t
-
-from go.vector3 import Vector3, vec3_from_floats
-from go.vector4D import Vector4D, vec4_from_floats
+from go.vector3 import Vector3
+from go.vector4D import Vector4D
 
 
 pi: float
 
 
 class Matrix44:
-    def __init__(self, m:t.Optional[list[float]]): ...
+    def __init__(self, m: Optional[list[float]]): ...
 
-    def _get_row_1(self) -> Vector3: ...
-    def _set_row_1(self, values: list[float]) -> None: ...
-
-    def _get_row_2(self) -> Vector3: ...
-    def _set_row_2(self, values: list[float]): ...
-
-    def _get_row_3(self) -> Vector3: ...
-    def _set_row_3(self, values: list[float]): ...
-
-    """
-    _row1 = property(_get_row_1, _set_row_1, None, "Row 1")
-    _row2 = property(_get_row_2, _set_row_2, None, "Row 2")
-    _row3 = property(_get_row_3, _set_row_3, None, "Row 3")
-
-    right     = _row1
-    up        = _row2
-    forward   = _row3
-    """
+    right: list[float]
+    up: list[float]
+    forward: list[float]
 
     def copy(self) -> Matrix44: ...
     __copy__ = copy

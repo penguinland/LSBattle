@@ -1,5 +1,7 @@
 from typing import Iterator
 
+from go.vector3 import Vector3
+
 
 """
 cdef void _arg0(Vector4D self, args):
@@ -44,7 +46,6 @@ _args[4] = _arg4
 """
 
 class Vector4D:
-
     def __init__(self, *args):
         _args[len(args)](self, args)
 
@@ -54,41 +55,11 @@ class Vector4D:
     def copy(self) -> Vector4D: ...
     __copy__ = copy
 
-    """
-    def _get_t(self):
-        return self._t
-    def _set_t(self, double t):
-        self._t = t
-    t = property(_get_t, _set_t, None, "t component.")
-
-    def _get_x(self):
-        return self._x
-    def _set_x(self, double x):
-        self._x = x
-    x = property(_get_x, _set_x, None, "x component.")
-
-    def _get_y(self):
-        return self._y
-    def _set_y(self, double y):
-        self._y = y
-    y = property(_get_y, _set_y, None, "y component.")
-
-    def _get_z(self):
-        return self._z
-    def _set_z(self, double z):
-        self._z = z
-    z = property(_get_z, _set_z, None, "z component.")
-
-    def _get_3d(self):
-        return vec3_from_floats(self._x, self._y, self._z)
-    def _set_3d(self, v):
-        cdef double x, y, z
-        x, y, z = v
-        self._x = x
-        self._y = y
-        self._z = z
-    d = property(_get_3d, _set_3d, None, "space part")
-    """
+    t: float
+    x: float
+    y: float
+    z: float
+    d: Vector3
 
     def __iter__(self) -> Iterator[float]: ...
 
